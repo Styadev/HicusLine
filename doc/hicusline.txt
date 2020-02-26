@@ -1,0 +1,77 @@
+*hicusline*						A highly customizable statusline in (neo)vim.
+
+Version: 1.0.0
+Author: Styadev's everyone
+License: MIT
+
+==============================================================================
+CONTENTS													*hicusline-contents*
+
+Introduction					|hicusline-introduction|
+Install							|hicusline-install|
+Configuration					|hicusline-configuration|
+Command							|hicusline-command|
+
+==============================================================================
+INTRODUCTION											*hicusline-introduction*
+
+HicusLine is a highly customizable statusline in (neo)vim.This plug provides
+user with the highly customizable ability to make the (neo)vim statusline.
+
+==============================================================================
+INSTALL														*hicusline-install*
+
+To install with vim-plug,you should add :
+
+	Plug 'Styadev/HicusLine'
+
+in .vimrc(for vim) or init.vim(for neovim).
+
+==============================================================================
+CONFIGURATION										*hicusline-configuration*
+
+First of all,you should add:
+
+	set laststatus=2 " You can set other number
+
+in .vimrc(for vim) or init.vim(for neovim).
+
+*g:HicusLineEnabled* {value}(Default: 0)
+
+If {value} is 1,you can use HicusLine.Otherwise can't.
+
+e.g.:
+
+	let g:HicusLineEnabled = 1
+
+*g:HicusLine* {value}(Default: None)
+
+The {value} is a dictionary.You can set your own statusline by it.If you don't
+set it,the statusline will be the vim's default.
+
+These are the options can write in {value}:
+
+'theme': 'theme' " Set the theme for statusline
+
+	The theme should be written by yourself.You can use 'user_function' to
+	define your own theme.
+
+'left': [ 'option', ... ] " Set the options on left statusline
+
+'right': [ 'option', ... ] "Set the options on right statusline
+
+These options can write in 'left' and 'right':
+
+	'filename' - Show the current filename
+	'filepath' - Show the current file's whole path
+	'modified' - Show if the current file modified, you can choose the best
+	style for yourself in 'basic_option'.If the type is 1,it will be [+].If
+	the type is 2,it will be +.
+
+'user_function': [ 'functionName': 'user_defined_function' ] " Set the user's
+function.
+
+'basic_option' : [ 'optionName': 'optionType' ] " Set the option's type.
+
+==============================================================================
+vim:tw=78:nosta:noet:ts=4:sts=0:ft=help:noet:fen:fdm=marker:
