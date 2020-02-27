@@ -15,6 +15,8 @@ function! s:ThrowError(errorType)
 		echom '[HicusLine]: You have not set the HicusLineEnabled, run :help hicusline to know about it.'
 	elseif a:errorType == 1
 		echom '[HicusLine]: The HicusLineEnabled you set is wrong, run :help hicusline to know about it.'
+	elseif a:errorType == 2
+		echom '[HicusLine]: You have not open the statusline, write: set laststatus=2 in your vimrc or init.vim.'
 	endif
 	echohl None
 endfunction
@@ -29,6 +31,18 @@ elseif g:HicusLineEnabled != 0 && g:HicusLineEnabled != 1
 elseif type(g:HicusLineEnabled) != 0
 	call s:ThrowError(1)
 	finish
+elseif &laststatus == 0
+	call s:ThrowError(2)
+	finish
 endif
 let g:HicusLineLoaded = 1
 " }}}
+
+command! -nargs=0 HicusLineEnable call s:TurnOn()
+command! -nargs=0 HicusLineDisable call s:TurnOff()
+
+function! s:TurnOn() " TurnOn the HicusLine
+endfunction
+
+function! s:TurnOff() " TurnOff the HicusLine
+endfunction

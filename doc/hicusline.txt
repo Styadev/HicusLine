@@ -1,25 +1,25 @@
-*hicusline*						A highly customizable statusline in (neo)vim.
+*hicusline*			A highly customizable statusline in (neo)vim.
 
 Version: 1.0.0
 Author: Styadev's everyone
 License: MIT
 
 ==============================================================================
-CONTENTS													*hicusline-contents*
+CONTENTS						*hicusline-contents*
 
 Introduction					|hicusline-introduction|
-Install							|hicusline-install|
+Install						|hicusline-install|
 Configuration					|hicusline-configuration|
-Command							|hicusline-command|
+Command						|hicusline-command|
 
 ==============================================================================
-INTRODUCTION											*hicusline-introduction*
+INTRODUCTION						*hicusline-introduction*
 
 HicusLine is a highly customizable statusline in (neo)vim.This plug provides
 user with the highly customizable ability to make the (neo)vim statusline.
 
 ==============================================================================
-INSTALL														*hicusline-install*
+INSTALL							*hicusline-install*
 
 To install with vim-plug,you should add :
 
@@ -28,7 +28,7 @@ To install with vim-plug,you should add :
 in .vimrc(for vim) or init.vim(for neovim).
 
 ==============================================================================
-CONFIGURATION										*hicusline-configuration*
+CONFIGURATION						*hicusline-configuration*
 
 First of all,you should add:
 
@@ -53,25 +53,120 @@ These are the options can write in {value}:
 
 'theme': 'theme' " Set the theme for statusline
 
-	The theme should be written by yourself.You can use 'user_function' to
+	The theme should be written by yourself.You can use 'user_option' to
 	define your own theme.
 
-'left': [ 'option', ... ] " Set the options on left statusline
+'left': [ 'option', (...) ] " Set the options on left statusline
 
-'right': [ 'option', ... ] "Set the options on right statusline
+'right': [ 'option', (...) ] "Set the options on right statusline
 
 These options can write in 'left' and 'right':
 
 	'filename' - Show the current filename
+
+	'bufferfilepath' - Show the path to the file in the buffer
+
 	'filepath' - Show the current file's whole path
-	'modified' - Show if the current file modified, you can choose the best
-	style for yourself in 'basic_option'.If the type is 1,it will be [+].If
-	the type is 2,it will be +.
 
-'user_function': [ 'functionName': 'user_defined_function' ] " Set the user's
-function.
+	'buffernumber' - Show the current buffer's number.
 
-'basic_option' : [ 'optionName': 'optionType' ] " Set the option's type.
+	'chardecimal' - Show the character under the cursor in decimal.
+
+	'charhexadecimal' - Show the character under the cursor in hexadecimal.
+
+	'printernumber' - Show the printer page number.
+
+	'linenumber' - Show the current line number.
+
+	'bufferlinesnumber' - Show the all lines in current buffer.
+
+	'columnnumber' - Show the current column number.
+
+	'overdecimal' - Show the character offset in decimal from the beginning 
+	of the file.
+
+	'overhexadecimal' - Show the character offset in hexadecimal from the
+	beginning of the file.
+
+	'virtualcolumn' - Show the current virtual column number.
+
+	'virtualspecial' - Show the current virtual column number unless it is
+	same as 'columnnumber'.
+
+	'linepercentage' - Show the percentage of the current line in the
+	buffer.
+
+	'windowpercentage' - Show current percentage of the current window in
+	the buffer.
+
+	'argumentlist' - Show the argument list status in default title.If the
+	argument file count is zero or one,it will be empty.
+
+These options can write in 'left' and 'right',and need to set its type in
+'basic_option':
+
+	'modified' - Show the modified flag if the current file modified.If
+	the type is 1, it will be '[+]'.If the type is 2,it will be '+'.
+
+	'readonly' - Show the readonly flag if the current file is readonly,
+	If the type is 1,it will be '[RO]'.If the type is 2,it will be 'RO'.
+
+	'helpbuffer' - Show the help buffer flag.If the type is 1,it will be
+	'[Help]'.If the type is 2,it will be 'HLP'.
+
+	'preview' - Show the preview window flag.If the type is 1,it will be
+	'[Preview]'.If the type is 2,it will be 'PRV'.
+
+	'filetype' - Show the type of the current file.If the type is 1,it
+	will be '[filetype]'.If the type is 2,it will be 'filetype'.
+
+	'delimiter' - Show the delimiter.You can set its name in
+	'basic_option' and then set your own delimiter in 'user_option'.If
+	you don't want delimiter,you can set `'delimiter': 'none'`in
+	'basic_option'.
+	e.g.:
+
+		let g:HicusLine = {
+		\   'left': [ 'filename', 'dl', 'filetype', ],
+		\   'basic_option': { 'delimiter': 'dl', 'filetype': 1, },
+		\   'user_option': { 'dl': '|', },
+		\}
+
+'user_option': { 'optionName': 'user_defined_option', (...) } " Set the user's
+option.
+
+'basic_option' : { 'optionName': 'optionType', (...) } " Set the option's type.
+
+'user_function': { 'functionName': 'user_defined_function', (...) } " Call the
+user's function.You can use other plugin by this way.
+
+Here is an example:
+
+	let g:HicusLine = {
+	\   'left': [ 'filename', 'my', 'filetype', ],
+	\   'right': [ 'modified', 'windowpercentage', ],
+	\   'basic_option': {
+	\       'delimiter': 'none',
+	\       'filetype': 2,
+	\       'modified': 1,
+	\   },
+	\   'user_option': {
+	\       'my': 'This is my: '
+	\   },
+	\}
 
 ==============================================================================
-vim:tw=78:nosta:noet:ts=4:sts=0:ft=help:noet:fen:fdm=marker:
+COMMAND							*hicusline-command*
+
+You should set `let g:HicusLineEnabled = 1` before use these commands.
+
+*:HicusLineEnable*
+
+Turn on HicusLine temporarily.
+
+*:HicusLineDisable*
+
+Turn off HicusLine temporarily.
+
+==============================================================================
+vim:tw=78:nosta:noet:sw=4:ts=8:sts=0:ft=help:noet:fen:fdm=marker:
