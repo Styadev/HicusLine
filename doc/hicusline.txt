@@ -155,6 +155,15 @@ Here is an example:
 	\   },
 	\}
 
+If you don't want to spend too much time configuring statusline,you can use
+this:
+
+	let g:HicusLine = {
+	\   'theme': 'default',
+	\}
+
+And then,you can use our default template.
+
 ==============================================================================
 COMMAND							*hicusline-command*
 
