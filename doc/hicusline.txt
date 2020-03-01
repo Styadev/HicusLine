@@ -62,6 +62,9 @@ These are the options can write in {value}:
 
 These options can write in 'left' and 'right':
 
+	[0-9] - The highlight color,you should use :highlight to set it before
+	add it in 'left' or 'right'.
+
 	'filename' - Show the current filename
 
 	'bufferfilepath' - Show the path to the file in the buffer
@@ -127,7 +130,7 @@ These options can write in 'left' and 'right',and need to set its type in
 	e.g.:
 
 		let g:HicusLine = {
-		\   'left': [ 'filename', 'dl', 'filetype', ],
+		\   'left': [ [ 'filename', ], [ 'dl', ], ['filetype', ], ],
 		\   'basic_option': { 'delimiter': 'dl', 'filetype': 1, },
 		\   'user_option': { 'dl': '|', },
 		\}
@@ -143,8 +146,8 @@ user's function.You can use other plugin by this way.
 Here is an example:
 
 	let g:HicusLine = {
-	\   'left': [ 'filename', 'my', 'filetype', ],
-	\   'right': [ 'modified', 'windowpercentage', ],
+	\   'left': [ 0, 'filename', 1, 'my', 'filetype', ],
+	\   'right': [ 1, 'modified', 0, 'windowpercentage', ],
 	\   'basic_option': {
 	\       'delimiter': 'none',
 	\       'filetype': 2,
@@ -154,6 +157,8 @@ Here is an example:
 	\       'my': 'This is my: '
 	\   },
 	\}
+	hi User0 guifg=235 gui=bold guibg=NONE
+	hi User1 guibg=235
 
 If you don't want to spend too much time configuring statusline,you can use
 this:

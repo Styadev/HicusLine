@@ -85,7 +85,7 @@ function! s:StatuslineStart() abort
 		return
 	endif
 	call s:SetStatusline()
-endfunction }}}
+endfunction " }}}
 
 " FUNCTION: s:StatuslineStop() {{{
 function! s:StatuslineStop() abort
@@ -132,7 +132,9 @@ function! s:GetHicusLine(attribute, type, ...) abort
 	endif
 endfunction " }}}
 
-function! s:DecideAttribute()
+function! s:DecideAttribute(key, value)
+	if a:key ==# 'left'
+	endif
 endfunction
 
 function! s:SetStatusline() abort
@@ -145,7 +147,8 @@ function! s:SetStatusline() abort
 	endif
 	let l:HicusLineNum = len(s:HicusLine)
 	let l:HicusDic = g:HicusLine
-	for [key, value] in items(l:HicusDic) " 这个循环用于遍历字典，我来写
+	for [l:key, l:value] in items(l:HicusDic)
+		call s:DecideAttribute(l:key, l:value)
 	endfor
 endfunction
 
