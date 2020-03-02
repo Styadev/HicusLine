@@ -51,7 +51,7 @@ set it,the statusline will be the vim's default.
 
 These are the options can write in {value}:
 
-'theme': 'theme' " Set the theme for statusline
+'template': 'template' " Set the template and theme for statusline
 
 	The theme should be written by yourself.You can use 'user_option' to
 	define your own theme.
@@ -63,7 +63,10 @@ These are the options can write in {value}:
 These options can write in 'left' and 'right':
 
 	[0-9] - The highlight color,you should use :highlight to set it before
-	add it in 'left' or 'right'.
+	add it in 'left' or 'right'.If it is 0,it will show the default
+	highlight.
+
+	'truncate' - Set where to truncate line if too long.
 
 	'filename' - Show the current filename
 
@@ -105,66 +108,44 @@ These options can write in 'left' and 'right':
 	'argumentlist' - Show the argument list status in default title.If the
 	argument file count is zero or one,it will be empty.
 
-These options can write in 'left' and 'right',and need to set its type in
-'basic_option':
-
-	'modified' - Show the modified flag if the current file modified.If
+	'modified[1-2]' - Show the modified flag if the current file modified.If
 	the type is 1, it will be '[+]'.If the type is 2,it will be '+'.
 
-	'readonly' - Show the readonly flag if the current file is readonly,
+	'readonly[1-2]' - Show the readonly flag if the current file is readonly,
 	If the type is 1,it will be '[RO]'.If the type is 2,it will be 'RO'.
 
-	'helpbuffer' - Show the help buffer flag.If the type is 1,it will be
+	'helpbuffer[1-2]' - Show the help buffer flag.If the type is 1,it will be
 	'[Help]'.If the type is 2,it will be 'HLP'.
 
-	'preview' - Show the preview window flag.If the type is 1,it will be
+	'preview[1-2]' - Show the preview window flag.If the type is 1,it will be
 	'[Preview]'.If the type is 2,it will be 'PRV'.
 
-	'filetype' - Show the type of the current file.If the type is 1,it
+	'filetype[1-2]' - Show the type of the current file.If the type is 1,it
 	will be '[filetype]'.If the type is 2,it will be 'filetype'.
 
-	'delimiter' - Show the delimiter.You can set its name in
-	'basic_option' and then set your own delimiter in 'user_option'.If
-	you don't want delimiter,you can set `'delimiter': 'none'`in
-	'basic_option'.
-	e.g.:
-
-		let g:HicusLine = {
-		\   'left': [ [ 'filename', ], [ 'dl', ], ['filetype', ], ],
-		\   'basic_option': { 'delimiter': 'dl', 'filetype': 1, },
-		\   'user_option': { 'dl': '|', },
-		\}
-
-'user_option': { 'optionName': 'user_defined_option', (...) } " Set the user's
-option.
-
 'basic_option' : { 'optionName': 'optionType', (...) } " Set the option's type.
-
-'user_function': { 'functionName': 'user_defined_function', (...) } " Call the
-user's function.You can use other plugin by this way.
 
 Here is an example:
 
 	let g:HicusLine = {
-	\   'left': [ 0, 'filename', 1, 'my', 'filetype', ],
-	\   'right': [ 1, 'modified', 0, 'windowpercentage', ],
-	\   'basic_option': {
-	\       'delimiter': 'none',
-	\       'filetype': 2,
-	\       'modified': 1,
-	\   },
-	\   'user_option': {
-	\       'my': 'This is my: '
-	\   },
+	\   'left': [ 1, 'filename', '%{ReadOnly()}' 2, '|', 'filetype1', ],
+	\   'right': [ 1, 'modified1', 0, 'windowpercentage', ],
 	\}
-	hi User0 guifg=235 gui=bold guibg=NONE
-	hi User1 guibg=235
+	hi User1 guifg=235 gui=bold guibg=NONE
+	hi User2 guibg=235
+	function! ReadOnly() abort
+	    if &readonly || !&modifiable
+	        return ''
+	    else
+	        return '✔'
+	        endif
+	endfunction
 
 If you don't want to spend too much time configuring statusline,you can use
 this:
 
 	let g:HicusLine = {
-	\   'theme': 'default',
+	\   'template': 'default',
 	\}
 
 And then,you can use our default template.
