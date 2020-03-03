@@ -39,6 +39,7 @@ elseif &laststatus == 0
 	finish
 endif
 let g:HicusLineLoaded = 1
+let g:HicusLineStatus = 1
 " 1}}}
 
 " Command mappings {{{
@@ -48,13 +49,23 @@ command! -nargs=0 HicusLineDisable call s:TurnOnOff(0)
 
 " FUNCTION: s:CheckStatusline() {{{
 function! s:CheckStatusline()
-	if s:HicusLineLoaded == 0
+	if g:HicusLineLoaded == 0
 		call s:ThrowError(0, 'The g:HicusLineLoaded is error, please check the source code or restart (neo)vim.')
 		finish
-	elseif s:HicusLineStatus == 0
+	elseif g:HicusLineStatus == 0
 		call s:ThrowError(0, 'Program wants to start statusline, but it is closing, please check the source code or restart (neo)vim.')
 		return
 	endif
+	return 1
+endfunction " }}}
+
+" FUNCTION: s:UseDefaultTemplate() {{{
+function! s:UseDefaultTemplate() abort
+	if s:CheckStatusline() == 0
+		return
+	endif
+	runtime template/default.vim
+	call HicusLineDefaultUse()
 endfunction " }}}
 
 " FUNCTION: s:DecideAttribute(statusType, attributeValue) {{{
@@ -62,9 +73,33 @@ function! s:DecideAttribute(statusType, attributeValue) abort
 	if a:statusType == 'right'
 		set statusline+=%=
 	endif
+	if a:statusType == 'template'
+		if a:attributeValue == 'default'
+			call s:UseDefaultTemplate()
+		endif
+		return
+	endif
 	for l:attribute in a:attributeValue
 		if type(l:attribute) == 0
-			set statusline+=%*%.l:attribute
+			if l:attribute == 1
+				set statusline+=%1*
+			elseif l:attribute == 2
+				set statusline+=%2*
+			elseif l:attribute == 3
+				set statusline+=%3*
+			elseif l:attribute == 4
+				set statusline+=%4*
+			elseif l:attribute == 5
+				set statusline+=%5*
+			elseif l:attribute == 6
+				set statusline+=%6*
+			elseif l:attribute == 7
+				set statusline+=%7*
+			elseif l:attribute == 8
+				set statusline+=%8*
+			elseif l:attribute == 9
+				set statusline+=%9*
+			endif
 		elseif l:attribute ==# 'truncate'
 			set statusline+=%<
 		elseif l:attribute ==# 'filename'
@@ -101,26 +136,31 @@ function! s:DecideAttribute(statusType, attributeValue) abort
 			set statusline+=%P
 		elseif l:attribute ==# 'argumentlist'
 			set statusline+=%a
-		elseif l:attribute ==# 'modified1'
+		elseif l:attribute ==# 'modified' || l:attribute ==# 'modified1'
 			set statusline+=%m
 		elseif l:attribute ==# 'modified2'
 			set statusline+=%M
-		elseif l:attribute ==# 'readonly1'
+		elseif l:attribute ==# 'readonly' || l:attribute ==# 'readonly1'
 			set statusline+=%r
 		elseif l:attribute ==# 'readonly2'
 			set statusline+=%R
-		elseif l:attribute ==# 'helpbuffer1'
+		elseif l:attribute ==# 'helpbuffer' || l:attribute ==# 'helpbuffer1'
 			set statusline+=%h
 		elseif l:attribute ==# 'helpbuffer2'
 			set statusline+=%H
-		elseif l:attribute ==# 'preview1'
+		elseif l:attribute ==# 'preview' || l:attribute ==# 'preview1'
 			set statusline+=%w
 		elseif l:attribute ==# 'preview2'
 			set statusline+=%W
-		elseif l:attribute ==# 'filetype1'
+		elseif l:attribute ==# 'filetype' || l:attribute ==# 'filetype1'
 			set statusline+=%y
 		elseif l:attribute ==# 'filetype2'
 			set statusline+=%Y
+		else
+			function! StatusAttribute(...)
+				return a:1
+			endfunction
+			set statusline+=%{StatusAttribute(l:attribute)}
 		endif
 	endfor
 endfunction " }}}
@@ -148,44 +188,36 @@ endfunction " }}}
 
 " FUNCTION: s:StatuslineStop() {{{
 function! s:StatuslineStop() abort
-	if s:HicusLineStatus == 0
-		call s:ThrowError(0, 'The s:HicusLineStatus is error, please check the source code or restart (neo)vim.')
+	if g:HicusLineStatus == 1
+		call s:ThrowError(0, 'The g:HicusLineStatus is error, please check the source code or restart (neo)vim.')
 		return
 	endif
+	set statusline=
 endfunction " }}}
 
 " FUNCTION: s:TurnOn(turnType) {{{
 function! s:TurnOnOff(turnType) abort " TurnOn the HicusLine
 	if a:turnType == 0
-		if s:HicusLineStatus == 0
+		if exists('g:HicusLineStatus') && g:HicusLineStatus == 0
 			call s:ThrowError(0, 'The HicusLine is colsing, you can run :help hicusline-command to know about it.')
 			return
 		endif
-		let s:HicusLineStatus = 0
+		let g:HicusLineStatus = 0
 		call s:StatuslineStop()
 	elseif a:turnType == 1
-		if !exists('s:HicusLineStatus')
+		if !exists('g:HicusLineStatus')
 			call s:ThrowError(0, 'The HicusLine is openning, you can run :help hicusline-command to know about it.')
 			return
-		elseif s:HicusLineStatus == 1
+		elseif g:HicusLineStatus == 1
 			call s:ThrowError(0, 'The HicusLine is openning, you can run :help hicusline-command to know about it.')
 			return
 		endif
-		let s:HicusLineStatus = 1
+		let g:HicusLineStatus = 1
 		call s:StatuslineStart()
 	endif
 endfunction " }}}
 
-" FUNCTION: s:UseDefaultTemplate() {{{
-function! s:UseDefaultTemplate() abort
-	if s:CheckStatusline() == 0
-		return
-	endif
-	runtime template/default.vim
-	call HicusLineDefaultUse()
-endfunction " }}}
-
-"call s:SetStatusline()
+call s:StatuslineStart()
 
 "function! s:GetBuffers() abort
 "endfunction

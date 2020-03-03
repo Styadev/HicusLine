@@ -108,6 +108,9 @@ These options can write in 'left' and 'right':
 	'argumentlist' - Show the argument list status in default title.If the
 	argument file count is zero or one,it will be empty.
 
+These options need to set it type.if you don't set it,it will be the default
+type.(Default 1)
+
 	'modified[1-2]' - Show the modified flag if the current file modified.If
 	the type is 1, it will be '[+]'.If the type is 2,it will be '+'.
 
