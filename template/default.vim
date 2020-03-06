@@ -1,4 +1,4 @@
-function! s:GitInfo() abort
+function! GitInfo() abort
 	let git = fugitive#head()
 	if git != ''
 		return ' '.fugitive#head()
@@ -8,7 +8,7 @@ function! s:GitInfo() abort
 endfunction
 
 " Find out current buffer's size and output it.
-function! s:FileSize() abort
+function! FileSize() abort
 	let bytes = getfsize(expand('%:p'))
 	if (bytes >= 1024)
 		let kbytes = bytes / 1024
@@ -28,7 +28,7 @@ function! s:FileSize() abort
 	endif
 endfunction
 
-function! s:ReadOnly() abort
+function! ReadOnly() abort
 	if &readonly || !&modifiable
 		return ''
 	else
@@ -37,7 +37,7 @@ function! s:ReadOnly() abort
 endfunction
 
 function! HicusLineDefaultUse()
-	set statusline=%{s:ReadOnly()}
+	set statusline=%{ReadOnly()}
 	set statusline+=\ %n\
 	set statusline+=%#DiffAdd#%{(mode()=='n')?'\ \ NORMAL\ ':''}
 	set statusline+=%#DiffChange#%{(mode()=='i')?'\ \ INSERT\ ':''}
@@ -53,10 +53,10 @@ function! HicusLineDefaultUse()
 	set statusline+=%#CursorLine#
 	set statusline+=%.20F
 	set statusline+=%=
-	set statusline+=%{s:FileSize()}
+	set statusline+=%{FileSize()}
 	set statusline+=%#CursorLine#
 	set statusline+=\ %Y\
-	set statusline+=%{s:GitInfo()}
+	set statusline+=%{GitInfo()}
 	set statusline+=%#CursorIM#
 	set statusline+=\ %3l:%-2c\
 	set statusline+=%#Cursor#

@@ -68,101 +68,124 @@ function! s:UseDefaultTemplate() abort
 	call HicusLineDefaultUse()
 endfunction " }}}
 
-" FUNCTION: s:DecideAttribute(statusType, attributeValue) {{{
-function! s:DecideAttribute(statusType, attributeValue) abort
-	if a:statusType == 'right'
-		set statusline+=%=
-	endif
-	if a:statusType == 'template'
-		if a:attributeValue == 'default'
-			call s:UseDefaultTemplate()
-		endif
+function! SetStatusMode() abort
+	if !exists('g:HicusLineMode')
+		call s:ThrowError(0, 'The g:HicusLineMode is not set, please run :help g:HicusLineMode to know about it.')
+		return
+	elseif empty(g:HicusLineMode) || type(g:HicusLineMode) != 4
+		call s:ThrowError(0, 'The g:HicusLineMode is error, please run :help g:HicusLineMode to know about it.')
 		return
 	endif
-	for l:attribute in a:attributeValue
-		if type(l:attribute) == 0
-			if l:attribute == 1
-				set statusline+=%1*
-			elseif l:attribute == 2
-				set statusline+=%2*
-			elseif l:attribute == 3
-				set statusline+=%3*
-			elseif l:attribute == 4
-				set statusline+=%4*
-			elseif l:attribute == 5
-				set statusline+=%5*
-			elseif l:attribute == 6
-				set statusline+=%6*
-			elseif l:attribute == 7
-				set statusline+=%7*
-			elseif l:attribute == 8
-				set statusline+=%8*
-			elseif l:attribute == 9
-				set statusline+=%9*
+	if has_key(g:HicusLineMode, mode())
+		let l:statusMode = get(g:HicusLineMode, mode())
+	else
+		return
+	endif
+	return l:statusMode
+endfunction
+
+" FUNCTION: s:DecideAttribute(leftKey, rightKey) {{{
+function! s:DecideAttribute(leftKey, rightKey) abort
+	function! SetAttribute(keyAttribute)
+		for l:attribute in a:keyAttribute
+			if type(l:attribute) == 0
+				if l:attribute == 1
+					set statusline+=%1*
+				elseif l:attribute == 2
+					set statusline+=%2*
+				elseif l:attribute == 3
+					set statusline+=%3*
+				elseif l:attribute == 4
+					set statusline+=%4*
+				elseif l:attribute == 5
+					set statusline+=%5*
+				elseif l:attribute == 6
+					set statusline+=%6*
+				elseif l:attribute == 7
+					set statusline+=%7*
+				elseif l:attribute == 8
+					set statusline+=%8*
+				elseif l:attribute == 9
+					set statusline+=%9*
+				elseif l:attribute == 0
+					set statusline+=%*
+				endif
+			elseif l:attribute ==# 'truncate'
+				set statusline+=%<
+			elseif l:attribute ==# 'mode'
+				set statusline+=%{SetStatusMode()}
+			elseif l:attribute ==# 'filename'
+				set statusline+=%t
+			elseif l:attribute ==# 'fileformat'
+				set statusline+=%{&fileformat}
+			elseif l:attribute ==# 'fileencoding'
+				set statusline+=%{&fileencoding}
+			elseif l:attribute ==# 'bufferfilepath'
+				set statusline+=%f
+			elseif l:attribute ==# 'filepath'
+				set statusline+=%F
+			elseif l:attribute ==# 'buffernumber'
+				set statusline+=%n
+			elseif l:attribute ==# 'chardecimal'
+				set statusline+=%b
+			elseif l:attribute ==# 'charhexadecimal'
+				set statusline+=%B
+			elseif l:attribute ==# 'printernumber'
+				set statusline+=%N
+			elseif l:attribute ==# 'linenumber'
+				set statusline+=%l
+			elseif l:attribute ==# 'bufferlinesnumber'
+				set statusline+=%L
+			elseif l:attribute ==# 'columnnuber'
+				set statusline+=%c
+			elseif l:attribute ==# 'overdecimal'
+				set statusline+=%o
+			elseif l:attribute ==# 'overhexadecimal'
+				set statusline+=%O
+			elseif l:attribute ==# 'virtualcolumn'
+				set statusline+=%v
+			elseif l:attribute ==# 'virtualspecial'
+				set statusline+=%V
+			elseif l:attribute ==# 'linepercentage'
+				set statusline+=%p
+			elseif l:attribute ==# 'windowpercentage'
+				set statusline+=%P
+			elseif l:attribute ==# 'argumentlist'
+				set statusline+=%a
+			elseif l:attribute ==# 'modified' || l:attribute ==# 'modified1'
+				set statusline+=%m
+			elseif l:attribute ==# 'modified2'
+				set statusline+=%M
+			elseif l:attribute ==# 'readonly' || l:attribute ==# 'readonly1'
+				set statusline+=%r
+			elseif l:attribute ==# 'readonly2'
+				set statusline+=%R
+			elseif l:attribute ==# 'helpbuffer' || l:attribute ==# 'helpbuffer1'
+				set statusline+=%h
+			elseif l:attribute ==# 'helpbuffer2'
+				set statusline+=%H
+			elseif l:attribute ==# 'preview' || l:attribute ==# 'preview1'
+				set statusline+=%w
+			elseif l:attribute ==# 'preview2'
+				set statusline+=%W
+			elseif l:attribute ==# 'filetype' || l:attribute ==# 'filetype1'
+				set statusline+=%y
+			elseif l:attribute ==# 'filetype2'
+				set statusline+=%Y
+			else
+				execute "set statusline+=" . l:attribute
 			endif
-		elseif l:attribute ==# 'truncate'
-			set statusline+=%<
-		elseif l:attribute ==# 'filename'
-			set statusline+=%t
-		elseif l:attribute ==# 'bufferfilepath'
-			set statusline+=%f
-		elseif l:attribute ==# 'filepath'
-			set statusline+=%F
-		elseif l:attribute ==# 'buffernumber'
-			set statusline+=%n
-		elseif l:attribute ==# 'chardecimal'
-			set statusline+=%b
-		elseif l:attribute ==# 'charhexadecimal'
-			set statusline+=%B
-		elseif l:attribute ==# 'printernumber'
-			set statusline+=%N
-		elseif l:attribute ==# 'linenumber'
-			set statusline+=%l
-		elseif l:attribute ==# 'bufferlinesnumber'
-			set statusline+=%L
-		elseif l:attribute ==# 'columnnuber'
-			set statusline+=%c
-		elseif l:attribute ==# 'overdecimal'
-			set statusline+=%o
-		elseif l:attribute ==# 'overhexadecimal'
-			set statusline+=%O
-		elseif l:attribute ==# 'virtualcolumn'
-			set statusline+=%v
-		elseif l:attribute ==# 'virtualspecial'
-			set statusline+=%V
-		elseif l:attribute ==# 'linepercentage'
-			set statusline+=%p
-		elseif l:attribute ==# 'windowpercentage'
-			set statusline+=%P
-		elseif l:attribute ==# 'argumentlist'
-			set statusline+=%a
-		elseif l:attribute ==# 'modified' || l:attribute ==# 'modified1'
-			set statusline+=%m
-		elseif l:attribute ==# 'modified2'
-			set statusline+=%M
-		elseif l:attribute ==# 'readonly' || l:attribute ==# 'readonly1'
-			set statusline+=%r
-		elseif l:attribute ==# 'readonly2'
-			set statusline+=%R
-		elseif l:attribute ==# 'helpbuffer' || l:attribute ==# 'helpbuffer1'
-			set statusline+=%h
-		elseif l:attribute ==# 'helpbuffer2'
-			set statusline+=%H
-		elseif l:attribute ==# 'preview' || l:attribute ==# 'preview1'
-			set statusline+=%w
-		elseif l:attribute ==# 'preview2'
-			set statusline+=%W
-		elseif l:attribute ==# 'filetype' || l:attribute ==# 'filetype1'
-			set statusline+=%y
-		elseif l:attribute ==# 'filetype2'
-			set statusline+=%Y
-		else
-			function! StatusAttribute(...)
-				return a:1
-			endfunction
-			set statusline+=%{StatusAttribute(l:attribute)}
-		endif
-	endfor
+		endfor
+	endfunction
+	if !exists('l:leftStatus')
+		call SetAttribute(a:leftKey)
+		let l:leftStatus = 1
+	endif
+	if l:leftStatus == 1
+		set statusline+=%=
+		call SetAttribute(a:rightKey)
+	endif
+	unlet l:leftStatus
 endfunction " }}}
 
 " FUNCTION: s:SetStatusline() {{{
@@ -173,8 +196,23 @@ function! s:SetStatusline() abort
 	endif
 	let l:HicusDic = g:HicusLine
 	for [l:key, l:value] in items(l:HicusDic)
-		call s:DecideAttribute(l:key, l:value)
+		if l:key == 'template' && l:value == 'default'
+			call s:UseDefaultTemplate()
+			return
+		endif
+		if !exists('l:rightKey')
+			let l:rightKey = get(l:value, 'right')
+		endif
+		if !exists('l:leftKey')
+			let l:leftKey = get(l:value, 'left')
+		endif
 	endfor
+	if !empty(l:leftKey) && !empty(l:rightKey)
+		call s:DecideAttribute(l:leftKey, l:rightKey)
+	endif
+	if &statusline == ''
+		call s:ThrowError(0, 'The g:HicusLine is error, please check the source code or restart (neo)vim.')
+	endif
 	unlet l:HicusDic
 endfunction " }}}
 

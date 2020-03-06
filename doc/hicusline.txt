@@ -44,6 +44,26 @@ e.g.:
 
 	let g:HicusLineEnabled = 1
 
+*g:HicusLineMode* {value}(Default: None)
+
+The {value} is the mode content you want it to show.If you don't set it,you
+will can't use 'mode' option.
+e.g.:
+
+	let g:HicusLineMode = {
+	\   'n':      'NORMAL',
+	\   'i':      'INSERT',
+	\   'R':      'REPLACE',
+	\   'v':      'VISUAL',
+	\   'V':      'L-VIS',
+	\   "\<C-v>": 'B-VIS',
+	\   'c':      'COMMAND',
+	\   's':      'SELECT',
+	\   'S':      'L-SEL',
+	\   "\<C-s>": 'B-SEL',
+	\   't':      'TERMINAL',
+	\}
+
 *g:HicusLine* {value}(Default: None)
 
 The {value} is a dictionary.You can set your own statusline by it.If you don't
@@ -55,6 +75,8 @@ These are the options can write in {value}:
 
 	The theme should be written by yourself.You can use 'user_option' to
 	define your own theme.
+
+'active': { 'left': [...], 'right': [...] } " Set the statusline.
 
 'left': [ 'option', (...) ] " Set the options on left statusline
 
@@ -69,6 +91,10 @@ These options can write in 'left' and 'right':
 	'truncate' - Set where to truncate line if too long.
 
 	'filename' - Show the current filename
+
+	'fileformat' - Show the current fileformat
+
+	'fileencoding' - Show the File-content encoding for the current buffer.
 
 	'bufferfilepath' - Show the path to the file in the buffer
 
