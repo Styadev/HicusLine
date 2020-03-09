@@ -1,6 +1,6 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: <+++>
+" Last Change: 2020.3.9
 " Version: 1.0.0
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
@@ -68,6 +68,7 @@ function! s:UseDefaultTemplate() abort
 	call HicusLineDefaultUse()
 endfunction " }}}
 
+" FUNCTION: SetStatusMode() {{{
 function! SetStatusMode() abort
 	if !exists('g:HicusLineMode')
 		call s:ThrowError(0, 'The g:HicusLineMode is not set, please run :help g:HicusLineMode to know about it.')
@@ -82,7 +83,16 @@ function! SetStatusMode() abort
 		return
 	endif
 	return l:statusMode
-endfunction
+endfunction " }}}
+
+" FUNCTION: SpellStatus() {{{
+function! SpellStatus() abort
+	if &spell == 0
+		return ''
+	elseif &spell == 1
+		return 'SPELL['.&spelllang.']'
+	endif
+endfunction " }}}
 
 " FUNCTION: s:DecideAttribute(leftKey, rightKey) {{{
 function! s:DecideAttribute(leftKey, rightKey) abort
@@ -112,6 +122,10 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 				endif
 			elseif l:attribute ==# 'truncate'
 				set statusline+=%<
+			elseif l:attribute ==# 'space'
+				set statusline+=\ 
+			elseif l:attribute ==# 'spell'
+				set statusline+=%{SpellStatus()}
 			elseif l:attribute ==# 'mode'
 				set statusline+=%{SetStatusMode()}
 			elseif l:attribute ==# 'filename'
@@ -256,6 +270,3 @@ function! s:TurnOnOff(turnType) abort " TurnOn the HicusLine
 endfunction " }}}
 
 call s:StatuslineStart()
-
-"function! s:GetBuffers() abort
-"endfunction

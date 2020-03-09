@@ -73,8 +73,7 @@ These are the options can write in {value}:
 
 'template': 'template' " Set the template and theme for statusline
 
-	The theme should be written by yourself.You can use 'user_option' to
-	define your own theme.
+You can Set your own template and put it in template dirctory.
 
 'active': { 'left': [...], 'right': [...] } " Set the statusline.
 
@@ -90,15 +89,19 @@ These options can write in 'left' and 'right':
 
 	'truncate' - Set where to truncate line if too long.
 
-	'filename' - Show the current filename
+	'space' - Show a space in statusline.
 
-	'fileformat' - Show the current fileformat
+	'spell' - Show the spell status.
+
+	'filename' - Show the current filename.
+
+	'fileformat' - Show the current fileformat.
 
 	'fileencoding' - Show the File-content encoding for the current buffer.
 
-	'bufferfilepath' - Show the path to the file in the buffer
+	'bufferfilepath' - Show the path to the file in the buffer.
 
-	'filepath' - Show the current file's whole path
+	'filepath' - Show the current file's whole path.
 
 	'buffernumber' - Show the current buffer's number.
 
@@ -152,8 +155,6 @@ type.(Default 1)
 	'filetype[1-2]' - Show the type of the current file.If the type is 1,it
 	will be '[filetype]'.If the type is 2,it will be 'filetype'.
 
-'basic_option' : { 'optionName': 'optionType', (...) } " Set the option's type.
-
 Here is an example:
 
 	let g:HicusLine = {
@@ -169,15 +170,6 @@ Here is an example:
 	        return '✔'
 	        endif
 	endfunction
-
-If you don't want to spend too much time configuring statusline,you can use
-this:
-
-	let g:HicusLine = {
-	\   'template': 'default',
-	\}
-
-And then,you can use our default template.
 
 ==============================================================================
 COMMAND							*hicusline-command*
