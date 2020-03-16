@@ -13,7 +13,7 @@ endif
 function! s:ThrowError(errorType, ...)
 	echohl Error
 	if a:errorType == 0
-		echom '[Hicusline]: ' . a:1
+		echom '[Hicusline]: '.a:1
 	elseif a:errorType == 1
 		echom '[HicusLine]: You have not set the HicusLineEnabled, run :help hicusline to know about it.'
 	elseif a:errorType == 2
@@ -187,7 +187,7 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 			elseif l:attribute ==# 'filetype2'
 				set statusline+=%Y
 			else
-				execute "set statusline+=" . l:attribute
+				execute "set statusline+=".l:attribute
 			endif
 		endfor
 	endfunction
