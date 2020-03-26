@@ -20,7 +20,7 @@ You can run `:help hicusline` in (neo)vim to get the help document about configu
 
 ## The next step
 
-We will add Color Changes in the next version.It will make the statusline can change the color in different situations.
+We will add Color Changes and some useful tips in the next version.
 
 ## License
 

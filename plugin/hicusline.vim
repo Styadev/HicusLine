@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.3.9
-" Version: 1.0.0
+" Last Change: 2020.3.26
+" Version: 1.0.5
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
 
@@ -85,6 +85,20 @@ function! SetStatusMode() abort
 	return l:statusMode
 endfunction " }}}
 
+function! s:SetHighlight() abort
+	if !exists('g:HicusColor')
+		call s:ThrowError(0, 'You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine')
+		return
+	endif
+	for l:values in items(g:HicusColor)
+		if len(l:values) != 2 || len(l:values[1]) != 3
+			call ThrowError(0, 'The g:HicusColor is error, please check it.')
+			return
+		endif
+		execute 'highlight '.l:values[0].' gui='.l:values[1][0].' guifg='.l:values[1][1].' guibg='.l:values[1][2]
+	endfor
+endfunction
+
 " FUNCTION: SpellStatus() {{{
 function! SpellStatus() abort
 	if &spell == 0
@@ -98,32 +112,12 @@ endfunction " }}}
 function! s:DecideAttribute(leftKey, rightKey) abort
 	function! SetAttribute(keyAttribute)
 		for l:attribute in a:keyAttribute
-			if type(l:attribute) == 0
-				if l:attribute == 1
-					set statusline+=%1*
-				elseif l:attribute == 2
-					set statusline+=%2*
-				elseif l:attribute == 3
-					set statusline+=%3*
-				elseif l:attribute == 4
-					set statusline+=%4*
-				elseif l:attribute == 5
-					set statusline+=%5*
-				elseif l:attribute == 6
-					set statusline+=%6*
-				elseif l:attribute == 7
-					set statusline+=%7*
-				elseif l:attribute == 8
-					set statusline+=%8*
-				elseif l:attribute == 9
-					set statusline+=%9*
-				elseif l:attribute == 0
-					set statusline+=%*
-				endif
+			if type(l:attribute) == 0 && l:attribute == 0
+				set statusline+=%*
 			elseif l:attribute ==# 'truncate'
 				set statusline+=%<
 			elseif l:attribute ==# 'space'
-				set statusline+=\ 
+				let &statusline.="\ "
 			elseif l:attribute ==# 'spell'
 				set statusline+=%{SpellStatus()}
 			elseif l:attribute ==# 'mode'
@@ -187,7 +181,7 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 			elseif l:attribute ==# 'filetype2'
 				set statusline+=%Y
 			else
-				execute "set statusline+=".l:attribute
+				let &statusline .= l:attribute
 			endif
 		endfor
 	endfunction
@@ -236,6 +230,9 @@ function! s:StatuslineStart() abort
 		return
 	endif
 	call s:SetStatusline()
+	if !exists('g:HicusColorSetWay') || g:HicusColorSetWay == 1
+		call s:SetHighlight()
+	endif
 endfunction " }}}
 
 " FUNCTION: s:StatuslineStop() {{{
@@ -244,7 +241,7 @@ function! s:StatuslineStop() abort
 		call s:ThrowError(0, 'The g:HicusLineStatus is error, please check the source code or restart (neo)vim.')
 		return
 	endif
-	set statusline=
+	let &statusline = ''
 endfunction " }}}
 
 " FUNCTION: s:TurnOn(turnType) {{{

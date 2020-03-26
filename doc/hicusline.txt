@@ -51,18 +51,38 @@ will can't use 'mode' option.
 e.g.:
 
 	let g:HicusLineMode = {
-	\   'n':      'NORMAL',
-	\   'i':      'INSERT',
-	\   'R':      'REPLACE',
-	\   'v':      'VISUAL',
-	\   'V':      'L-VIS',
-	\   "\<C-v>": 'B-VIS',
-	\   'c':      'COMMAND',
-	\   's':      'SELECT',
-	\   'S':      'L-SEL',
-	\   "\<C-s>": 'B-SEL',
-	\   't':      'TERMINAL',
+	      \'n':      'NORMAL',
+	      \'i':      'INSERT',
+	      \'R':      'REPLACE',
+	      \'v':      'VISUAL',
+	      \'V':      'L-VISU',
+	      \"\<C-v>": 'B-VISU',
+	      \'c':      'COMMAND',
+	      \'s':      'SELECT',
+	      \'S':      'L-SELE',
+	      \"\<C-s>": 'B-SELE',
+	      \'t':      'TERMINAL',
 	\}
+
+*g:HicusColor* {value}(Default: None)
+
+The {value} is a dictionary.You can set the highlight color in this
+dictionary.
+e.g.:
+
+	let g:HicusColor = {
+	      \'StatusLine':    [ 'none' ,'#8BE9FD', '#44475A', ],
+	      \'double':        [ 'bold' ,'#282A36', '#BD93F9', ],
+	      \'infos':         [ 'none', '#FFFFFF', '#6272A4', ],
+	      \'ErrorStatus':   [ 'none', '#FF0033', '#44475A', ],
+	      \'WarningStatus': [ 'none', '#FFCC00', '#44475A', ],
+	\}
+
+*g:HicusColorSetWay* {value}(Default: 1)
+
+The {value} is a number.You can change the way to set the highlight group by
+setting {value}.If it is 1,you should use `g:HicusColor` to set highlight.If it
+is 0,you should set highlight by using `:highlight`.
 
 *g:HicusLine* {value}(Default: None)
 
@@ -83,9 +103,11 @@ You can Set your own template and put it in template dirctory.
 
 These options can write in 'left' and 'right':
 
-	[0-9] - The highlight color,you should use :highlight to set it before
-	add it in 'left' or 'right'.If it is 0,it will show the default
-	highlight.
+	%#Highlight# - Set the Highlight group.
+
+	%{function} - Set the function on status line.
+
+	0 - Show the default highlight group.
 
 	'truncate' - Set where to truncate line if too long.
 
