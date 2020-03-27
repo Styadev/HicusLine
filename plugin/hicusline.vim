@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.3.26
-" Version: 1.0.5
+" Last Change: 2020.3.27
+" Version: 1.1.0
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
 
@@ -45,6 +45,7 @@ let g:HicusLineStatus = 1
 " Command mappings {{{
 command! -nargs=0 HicusLineEnable call s:TurnOnOff(1)
 command! -nargs=0 HicusLineDisable call s:TurnOnOff(0)
+command! -nargs=0 HicusSyntaxReload call s:SetHighlight()
 " }}}
 
 " FUNCTION: s:CheckStatusline() {{{
@@ -57,6 +58,39 @@ function! s:CheckStatusline()
 		return
 	endif
 	return 1
+endfunction " }}}
+
+" FUNCTIONS: TipsSigns {{{
+function! HicusGitInfo()
+	let l:gitinfo = get(g:, 'coc_git_status', '')
+	if empty(l:gitinfo)
+		return ''
+	endif
+	return l:gitinfo
+endfunction
+
+function! HicusErrorStatus()
+	let l:status = get(b:, 'coc_diagnostic_info', '')
+	if empty(l:status)
+		return ''
+	endif
+	let l:errors = get(l:status, 'error', '')
+	if l:errors == ''
+		return ''
+	endif
+	return s:tipsSign[0].l:errors
+endfunction
+
+function! HicusWarningStatus()
+	let l:status = get(b:, 'coc_diagnostic_info', '')
+	if empty(l:status)
+		return ''
+	endif
+	let l:warning = get(l:status, 'warning', '')
+	if l:warning == ''
+		return ''
+	endif
+	return s:tipsSign[1].l:warning
 endfunction " }}}
 
 " FUNCTION: s:UseDefaultTemplate() {{{
@@ -79,12 +113,22 @@ function! SetStatusMode() abort
 	endif
 	if has_key(g:HicusLineMode, mode())
 		let l:statusMode = get(g:HicusLineMode, mode())
+		if type(l:statusMode) != 3
+			return l:statusMode
+		endif
+		silent! execute 'highlight link modehighlight '.l:statusMode[1]
+		if len(l:statusMode) == 3 && type(l:statusMode[2]) == 4
+			for [ l:key, l:value ] in items(l:statusMode[2])
+				silent! execute 'highlight link '.l:key.' '.l:value
+			endfor
+		endif
 	else
 		return
 	endif
-	return l:statusMode
+	return l:statusMode[0]
 endfunction " }}}
 
+" FUNCTION: s:SetHighlight() {{{
 function! s:SetHighlight() abort
 	if !exists('g:HicusColor')
 		call s:ThrowError(0, 'You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine')
@@ -97,7 +141,7 @@ function! s:SetHighlight() abort
 		endif
 		execute 'highlight '.l:values[0].' gui='.l:values[1][0].' guifg='.l:values[1][1].' guibg='.l:values[1][2]
 	endfor
-endfunction
+endfunction " }}}
 
 " FUNCTION: SpellStatus() {{{
 function! SpellStatus() abort
@@ -116,6 +160,14 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 				set statusline+=%*
 			elseif l:attribute ==# 'truncate'
 				set statusline+=%<
+			elseif l:attribute ==# 'modehighlight'
+				set statusline+=%#modehighlight#
+			elseif l:attribute ==# 'gitinfo'
+				set statusline+=%{HicusGitInfo()}
+			elseif l:attribute ==# 'errorstatus'
+				set statusline+=%{HicusErrorStatus()}
+			elseif l:attribute ==# 'warningstatus'
+				set statusline+=%{HicusWarningStatus()}
 			elseif l:attribute ==# 'space'
 				let &statusline.="\ "
 			elseif l:attribute ==# 'spell'
@@ -202,8 +254,7 @@ function! s:SetStatusline() abort
 		call s:ThrowError(0, 'The g:HicusLine is error, please check it or restart (neo)vim.')
 		return
 	endif
-	let l:HicusDic = g:HicusLine
-	for [l:key, l:value] in items(l:HicusDic)
+	for [l:key, l:value] in items(g:HicusLine)
 		if l:key == 'template' && l:value == 'default'
 			call s:UseDefaultTemplate()
 			return
@@ -214,6 +265,9 @@ function! s:SetStatusline() abort
 		if !exists('l:leftKey')
 			let l:leftKey = get(l:value, 'left')
 		endif
+		if l:key == 'basic_option'
+			let s:tipsSign = [ get(l:value, 'ErrorSign'), get(l:value, 'WarningSign'), ]
+		endif
 	endfor
 	if !empty(l:leftKey) && !empty(l:rightKey)
 		call s:DecideAttribute(l:leftKey, l:rightKey)
@@ -221,7 +275,10 @@ function! s:SetStatusline() abort
 	if &statusline == ''
 		call s:ThrowError(0, 'The g:HicusLine is error, please check the source code or restart (neo)vim.')
 	endif
-	unlet l:HicusDic
+	unlet l:leftKey
+	unlet l:rightKey
+	unlet l:key
+	unlet l:value
 endfunction " }}}
 
 " FUNCTION: s:StatuslineStart() {{{

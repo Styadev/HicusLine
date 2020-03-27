@@ -48,21 +48,44 @@ e.g.:
 
 The {value} is the mode content you want it to show.If you don't set it,you
 will can't use 'mode' option.
-e.g.:
+e.g.1:
 
-	let g:HicusLineMode = {
-	      \'n':      'NORMAL',
-	      \'i':      'INSERT',
-	      \'R':      'REPLACE',
-	      \'v':      'VISUAL',
-	      \'V':      'L-VISU',
-	      \"\<C-v>": 'B-VISU',
-	      \'c':      'COMMAND',
-	      \'s':      'SELECT',
-	      \'S':      'L-SELE',
-	      \"\<C-s>": 'B-SELE',
-	      \'t':      'TERMINAL',
-	\}
+let g:HicusLineMode = {
+      \'n':      'NORMAL',
+      \'i':      'INSERT',
+      \'R':      'REPLACE',
+      \'v':      'VISUAL',
+      \'V':      'L-VISU',
+      \"\<C-v>": 'B-VISU',
+      \'c':      'COMMAND',
+      \'s':      'SELECT',
+      \'S':      'L-SELE',
+      \"\<C-s>": 'B-SELE',
+      \'t':      'TERMINAL',
+\}
+
+And you can also set the color of each mode.In that case,you need to use list.
+You need to add `modehighlight` in the |g:HicusLine|
+The format is:
+'modename': [ 'modenametoshow', 'highlightname',
+      \{ 'otherhighlight': 'highlightname' } ]
+The {otherhighlight} is not necessary.you can don't set it.
+
+e.g.2:
+
+let g:HicusLineMode = {
+      \'n':      [ 'NORMAL', 'normalmode', { 'infos': 'normalinfos', }, ],
+      \'i':      [ 'INSERT', 'insertmode', { 'infos': 'otherinfos',  }, ],
+      \'R':      [ 'REPLACE', 'replacemode', { 'infos': 'otherinfos',  }, ],
+      \'v':      [ 'VISUAL', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \'V':      [ 'L-VISU', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \"\<C-v>": [ 'B-VISU', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \'c':      [ 'COMMAND', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'s':      [ 'SELECT', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'S':      [ 'L-SELE', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \"\<C-s>": [ 'B-SELE', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'t':      [ 'TERMINAL', 'normalmode', { 'infos': 'normalinfos',  }, ],
+\}
 
 *g:HicusColor* {value}(Default: None)
 
@@ -70,13 +93,13 @@ The {value} is a dictionary.You can set the highlight color in this
 dictionary.
 e.g.:
 
-	let g:HicusColor = {
-	      \'StatusLine':    [ 'none' ,'#8BE9FD', '#44475A', ],
-	      \'double':        [ 'bold' ,'#282A36', '#BD93F9', ],
-	      \'infos':         [ 'none', '#FFFFFF', '#6272A4', ],
-	      \'ErrorStatus':   [ 'none', '#FF0033', '#44475A', ],
-	      \'WarningStatus': [ 'none', '#FFCC00', '#44475A', ],
-	\}
+let g:HicusColor = {
+      \'StatusLine':    [ 'none' ,'#8BE9FD', '#44475A', ],
+      \'double':        [ 'bold' ,'#282A36', '#BD93F9', ],
+      \'infos':         [ 'none', '#FFFFFF', '#6272A4', ],
+      \'ErrorStatus':   [ 'none', '#FF0033', '#44475A', ],
+      \'WarningStatus': [ 'none', '#FFCC00', '#44475A', ],
+\}
 
 *g:HicusColorSetWay* {value}(Default: 1)
 
@@ -108,6 +131,17 @@ These options can write in 'left' and 'right':
 	%{function} - Set the function on status line.
 
 	0 - Show the default highlight group.
+
+	'gitinfo' - Show the git info in the current repository.(Require
+	coc.nvim)
+
+	'errorstatus' - Show the errors in the current file.(Require coc.nvim)
+
+	'warningstatus' - Show the warnings in the current file.(Require
+	coc.nvim)
+
+	'modehighlight' - Show the highlight that can change by the current
+	mode setting in |g:HicusLineMode|
 
 	'truncate' - Set where to truncate line if too long.
 
@@ -179,19 +213,31 @@ type.(Default 1)
 
 Here is an example:
 
-	let g:HicusLine = {
-	\   'left': [ 1, 'filename', '%{ReadOnly()}' 2, '|', 'filetype1', ],
-	\   'right': [ 1, 'modified1', 0, 'windowpercentage', ],
-	\}
-	hi User1 guifg=235 gui=bold guibg=NONE
-	hi User2 guibg=235
-	function! ReadOnly() abort
-	    if &readonly || !&modifiable
-	        return ''
-	    else
-	        return '✔'
-	        endif
-	endfunction
+let g:HicusLine = {
+      \'left': [ 'LeftHI', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
+      \'right': [ 'RightHI', 'modified1', 0, 'windowpercentage', ],
+\}
+
+hi LeftHI guifg=235 gui=bold guibg=NONE
+hi RightHI guibg=235
+function! ReadOnly() abort
+if &readonly || !&modifiable
+    return ''
+else
+    return '✔'
+    endif
+endfunction
+
+'basic_option': { 'optionname': 'value' }
+You can use it to set some options.Like the `ErrorSign` or the `WarningSign`
+e.g.:
+
+let g:HicusLine = {
+      \'basic_option': {
+      \    'ErrorSign': '●',
+      \    'WarningSign': '●',
+      \},
+}
 
 ==============================================================================
 COMMAND							*hicusline-command*
@@ -206,5 +252,9 @@ Turn on HicusLine temporarily.
 
 Turn off HicusLine temporarily.
 
+*:HicusSyntaxReload*
+
+Reload the status line highlight.
+
 ==============================================================================
-vim:tw=78:nosta:noet:sw=4:ts=8:sts=0:ft=help:noet:fen:fdm=marker:
+vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:noet:fen:fdm=marker:
