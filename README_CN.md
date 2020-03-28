@@ -1,28 +1,27 @@
 ## HicusLine
 
-A highly customizable statusline in (neo)vim.
-中文文档: [README](./README_CN.md)
-GitHub Repository: [HicusLine](https://github.com/Styadev/HicusLine)
-Gitee Repository: [HicusLine](https://gitee.com/springhan/HicusLine)
+(Neo)Vim下的高度自定义状态栏。
+English Document: [README](./README.md)
+Gitee仓库地址: [HicusLine](https://gitee.com/springhan/HicusLine)
+GitHub仓库地址: [HicusLine](https://github.com/Styadev/HicusLine)
 
-### ScreenShot
+### 截图
 
-![The image loading failed.](./demo.png)
+![图片加载失败](./demo.png)
 
-### Installation
+### 安装
 
-One of best way to install it is to use [vim-plug](https://github.com/junegunn/vim-plug):
+最好的办法就是使用 [vim-plug](https://github.com/junegunn/vim-plug) 进行安装:
 
 ```vim
-Plug 'Styadev/HicusLine'
+Plug 'https://gitee.com/springhan/HicusLine.git'
 ```
 
-### Configuration
+### 配置
 
-You can run `:help hicusline` in (neo)vim to get the help document about configuration.
+在安装过后，你可以在(Neo)Vim运行`:help hicusline`来阅读帮助文档；如果要查看中文版，可以运行`:help hicusline@cn`。
 
-If you not want to spend much time on it,you can see my configuration.
-e.g.:
+如果你不想花太多时间去配置它，你也可以看看示例配置(其实就是我的配置哈哈)。
 
 ```vim
 let g:HicusLineEnabled = 1
@@ -70,6 +69,6 @@ let g:HicusColor = {
 \}
 ```
 
-## License
+### 证书
 
 MIT

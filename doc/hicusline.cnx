@@ -1,0 +1,244 @@
+*hicusline*					(Neo)Vim下的高度自定义状态栏
+
+版本: 1.1.0
+作者: Styadev的所有人
+证书: MIT
+
+==============================================================================
+内容							*hicusline-contents*
+
+Introduction					|hicusline-introduction|
+Install						|hicusline-install|
+Configuration					|hicusline-configuration|
+Command						|hicusline-command|
+
+==============================================================================
+简介							*hicusline-introduction*
+
+HicusLine是(Neo)Vim下的高度自定义状态栏。它提供了用户高度自定义的能力去制作
+自己的状态栏。
+
+==============================================================================
+安装							*hicusline-install*
+
+使用`vim-plug`安装，你需要在`.vimrc`(对于Vim)或者`init.vim`(对于NeoVim)下加入：
+
+	Plug 'Styadev/HicusLine'
+
+==============================================================================
+配置							*hicusline-configuration*
+
+首先，你需要设置以下功能:
+
+	set laststatus=2 " 你可以设置为这个数字
+
+*g:HicusLineEnabled* {value}(默认: 0)
+
+如果{value}设置为1，`HicusLine`就可以使用了，反之则被禁用。
+If {value} is 1,you can use HicusLine.Otherwise can't.
+
+示例:
+
+	let g:HicusLineEnabled = 1
+
+*g:HicusLineMode* {value}(默认: None)
+
+{value}是当前模式下你想让状态栏展示的内容。如果你不设置的话，你就不能在状态栏
+使用'mode'选项。
+示例1:
+
+let g:HicusLineMode = {
+      \'n':      'NORMAL',
+      \'i':      'INSERT',
+      \'R':      'REPLACE',
+      \'v':      'VISUAL',
+      \'V':      'L-VISU',
+      \"\<C-v>": 'B-VISU',
+      \'c':      'COMMAND',
+      \'s':      'SELECT',
+      \'S':      'L-SELE',
+      \"\<C-s>": 'B-SELE',
+      \'t':      'TERMINAL',
+\}
+
+你也可以为每个不同的模式设置不同的高亮颜色。那样的话，你就需要将每个模式的值
+设置为List。你需要在|g:HicusLine|增加`modehighlight`选项以此来使用此功能。
+格式如下:
+'模式名称': [ '所展示的内容', '定义好颜色的高亮组的名称',
+      \{ '其他所需要高亮的高亮组': '定义好颜色的高亮组的名称' } ]
+{其他所需要高亮的高亮组}不是必须的。你也可以不设置它。
+
+示例2:
+
+let g:HicusLineMode = {
+      \'n':      [ 'NORMAL', 'normalmode', { 'infos': 'normalinfos', }, ],
+      \'i':      [ 'INSERT', 'insertmode', { 'infos': 'otherinfos',  }, ],
+      \'R':      [ 'REPLACE', 'replacemode', { 'infos': 'otherinfos',  }, ],
+      \'v':      [ 'VISUAL', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \'V':      [ 'L-VISU', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \"\<C-v>": [ 'B-VISU', 'visualmode', { 'infos': 'otherinfos',  }, ],
+      \'c':      [ 'COMMAND', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'s':      [ 'SELECT', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'S':      [ 'L-SELE', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \"\<C-s>": [ 'B-SELE', 'normalmode', { 'infos': 'normalinfos',  }, ],
+      \'t':      [ 'TERMINAL', 'normalmode', { 'infos': 'normalinfos',  }, ],
+\}
+
+*g:HicusColor* {value}(默认: None)
+
+{value}是Dictionary。你可以在这个Dictionary里为需要高亮的组设置高亮颜色。
+示例:
+
+let g:HicusColor = {
+      \'StatusLine':    [ 'none' ,'#8BE9FD', '#44475A', ],
+      \'double':        [ 'bold' ,'#282A36', '#BD93F9', ],
+      \'infos':         [ 'none', '#FFFFFF', '#6272A4', ],
+      \'ErrorStatus':   [ 'none', '#FF0033', '#44475A', ],
+      \'WarningStatus': [ 'none', '#FFCC00', '#44475A', ],
+\}
+
+*g:HicusColorSetWay* {value}(默认: 1)
+
+{value}是Number。你可以通过这个变量来改变设置高亮组的方法。如果{value}被设置为
+了1，你就应当使用`g:HicusColor`来设置高亮颜色；如果是0，你就应当使用
+`:highlight`指令来设置高亮颜色。
+
+*g:HicusLine* {value}(默认: None)
+
+{value}是Dictionary。你可以通过此变量来创造你自己的状态栏。如果你不设置它，那
+将报错并使用`Vim`原生的状态栏。
+
+以下是能够写入{value}的选项:
+
+'template': 'template' " 设置自带的状态栏模板
+
+你可以设置你自己的模板然后将其放入`template`目录。
+
+'active': { 'left': [...], 'right': [...] } " 设置状态栏
+
+'left': [ 'option', (...) ] " 设置状态栏左边的功能
+
+'right': [ 'option', (...) ] " 设置状态栏右边的功能
+
+以下是能够写入'left'和'right'的选项:
+
+	%#高亮组名称# - 设置高亮组名称
+
+	%{函数名称} - 设置函数名称
+
+	0 - 设置状态栏默认高亮颜色
+
+	'gitinfo' - 显示当前仓库的`Git`信息(需要coc.nvim)
+
+	'errorstatus' - 显示当前文件的错误数量(需要coc.nvim)
+
+	'warningstatus' - 显示当前文件的警告数量(需要coc.nvim)
+
+	'modehighlight' - 在|g:HicusLine|设置的能够根据当前模式改变而改变的
+	高亮组
+
+	'truncate' - 设置当状态栏过长时要省略的地方
+
+	'space' - 空格
+
+	'spell' - 拼写状态
+
+	'filename' - 文件名
+
+	'fileformat' - 文件格式
+
+	'fileencoding' - 文件编码
+
+	'bufferfilepath' - 显示buffer中的文件路径
+
+	'filepath' - 文件完整路径
+
+	'buffernumber' - 当前文件的buffer序号
+
+	'chardecimal' - 以十进制显示当前光标下的字符
+
+	'charhexadecimal' - 以十六进制显示当前光标下的字符
+
+	'printernumber' - 打印机页码
+
+	'linenumber' - 当前行行数
+
+	'bufferlinesnumber' - 当前文件行数
+
+	'columnnumber' - 当前列列数Show the current column number.
+
+	'overdecimal' - 从文件的开头以十进制显示字符偏移量
+
+	'overhexadecimal' - 从文件的开头以十六进制显示字符偏移量
+
+	'virtualcolumn' - 当前虚拟列数
+
+	'virtualspecial' - 显示当前虚拟列数，除非它与`columnnumber`相同
+
+	'linepercentage' - 当前行占整个文件的百分数
+
+	'windowpercentage' - 当前窗口占整个文件的百分数
+
+	'argumentlist' - 以默认标题显示参数列表状态。如果参数文件计数为零或一，
+	则为空
+
+这些选项需要设置它的类型。如果不设置，它将是默认值类型。(默认: 1)
+
+	'modified[1-2]' - 当前文件的修改状态。如果类型为1，则显示`[+]`；
+	为2则显示`+`
+
+	'readonly[1-2]' - 当前文件只读状态。如果类型为1，则显示`[RO]`；
+	为2则显示`RO`
+
+	'helpbuffer[1-2]' - 如果类型为1，则显示`[Help]`；为2则显示`HLP`
+
+	'preview[1-2]' - 如果类型为1，则显示`[Preview]`；为2则显示`PRV`
+
+	'filetype[1-2]' - 如果类型为1，则显示`[filetype]`；为2则显示`FILETYPE`
+
+示例:
+
+let g:HicusLine = {
+      \'left': [ 'LeftHI', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
+      \'right': [ 'RightHI', 'modified1', 0, 'windowpercentage', ],
+\}
+
+hi LeftHI guifg=235 gui=bold guibg=NONE
+hi RightHI guibg=235
+function! ReadOnly() abort
+if &readonly || !&modifiable
+    return ''
+else
+    return '✔'
+    endif
+endfunction
+
+'basic_option': { '选项名称': '值' }
+你可以使用它来设置一些选项。比如`ErrorSign`或者`WarningSign`
+
+示例:
+
+let g:HicusLine = {
+      \'basic_option': {
+      \    'ErrorSign': '●',
+      \    'WarningSign': '●',
+      \},
+}
+
+==============================================================================
+命令							*hicusline-command*
+
+*:HicusLineEnable*
+
+暂时启用HicusLine
+
+*:HicusLineDisable*
+
+暂时禁用HicusLine
+
+*:HicusSyntaxReload*
+
+重新加载高亮
+
+==============================================================================
+vim:tw=80:nosta:noet:sw=4:ts=8:sts=0:ft=help:noet:fen:fdm=marker:

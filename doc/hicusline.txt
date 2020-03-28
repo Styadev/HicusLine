@@ -1,6 +1,6 @@
 *hicusline*			A highly customizable statusline in (neo)vim.
 
-Version: 1.0.0
+Version: 1.1.0
 Author: Styadev's everyone
 License: MIT
 
@@ -21,11 +21,11 @@ user with the highly customizable ability to make the (neo)vim statusline.
 ==============================================================================
 INSTALL							*hicusline-install*
 
-To install with vim-plug,you should add :
+To install with `vim-plug`,you should add :
 
 	Plug 'Styadev/HicusLine'
 
-in .vimrc(for vim) or init.vim(for neovim).
+in `.vimrc`(for vim) or `init.vim`(for neovim).
 
 ==============================================================================
 CONFIGURATION						*hicusline-configuration*
@@ -34,11 +34,11 @@ First of all,you should add:
 
 	set laststatus=2 " You can set other number
 
-in .vimrc(for vim) or init.vim(for neovim).
+in `.vimrc`(for vim) or `init.vim`(for neovim).
 
 *g:HicusLineEnabled* {value}(Default: 0)
 
-If {value} is 1,you can use HicusLine.Otherwise can't.
+If {value} is 1,you can use `HicusLine`.Otherwise can't.
 
 e.g.:
 
@@ -110,13 +110,13 @@ is 0,you should set highlight by using `:highlight`.
 *g:HicusLine* {value}(Default: None)
 
 The {value} is a dictionary.You can set your own statusline by it.If you don't
-set it,the statusline will be the vim's default.
+set it,the statusline will throw an error and then be the vim's default.
 
 These are the options can write in {value}:
 
 'template': 'template' " Set the template and theme for statusline
 
-You can Set your own template and put it in template dirctory.
+You can set your own template and put it in `template` dirctory.
 
 'active': { 'left': [...], 'right': [...] } " Set the statusline.
 
@@ -197,19 +197,19 @@ These options need to set it type.if you don't set it,it will be the default
 type.(Default 1)
 
 	'modified[1-2]' - Show the modified flag if the current file modified.If
-	the type is 1, it will be '[+]'.If the type is 2,it will be '+'.
+	the type is 1, it will be `[+]`.If the type is 2,it will be `+`.
 
 	'readonly[1-2]' - Show the readonly flag if the current file is readonly,
-	If the type is 1,it will be '[RO]'.If the type is 2,it will be 'RO'.
+	If the type is 1,it will be `[RO]`.If the type is 2,it will be `RO`.
 
 	'helpbuffer[1-2]' - Show the help buffer flag.If the type is 1,it will be
-	'[Help]'.If the type is 2,it will be 'HLP'.
+	`[Help]`.If the type is 2,it will be `HLP`.
 
 	'preview[1-2]' - Show the preview window flag.If the type is 1,it will be
-	'[Preview]'.If the type is 2,it will be 'PRV'.
+	`[Preview]`.If the type is 2,it will be `PRV`.
 
 	'filetype[1-2]' - Show the type of the current file.If the type is 1,it
-	will be '[filetype]'.If the type is 2,it will be 'filetype'.
+	will be `[filetype]`.If the type is 2,it will be `FILETYPE`.
 
 Here is an example:
 
@@ -241,8 +241,6 @@ let g:HicusLine = {
 
 ==============================================================================
 COMMAND							*hicusline-command*
-
-You should set `let g:HicusLineEnabled = 1` before use these commands.
 
 *:HicusLineEnable*
 
