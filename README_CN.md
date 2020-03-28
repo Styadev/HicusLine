@@ -1,9 +1,13 @@
 ## HicusLine
 
 (Neo)Vim下的高度自定义状态栏。
+
 English Document: [README](./README.md)
+
 Gitee仓库地址: [HicusLine](https://gitee.com/springhan/HicusLine)
+
 GitHub仓库地址: [HicusLine](https://github.com/Styadev/HicusLine)
+
 
 ### 截图
 

@@ -1,9 +1,13 @@
 ## HicusLine
 
 A highly customizable statusline in (neo)vim.
+
 中文文档: [README](./README_CN.md)
+
 GitHub Repository: [HicusLine](https://github.com/Styadev/HicusLine)
+
 Gitee Repository: [HicusLine](https://gitee.com/springhan/HicusLine)
+
 
 ### ScreenShot
 
