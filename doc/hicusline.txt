@@ -209,7 +209,8 @@ type.(Default 1)
 	`[Preview]`.If the type is 2,it will be `PRV`.
 
 	'filetype[1-2]' - Show the type of the current file.If the type is 1,it
-	will be `[filetype]`.If the type is 2,it will be `FILETYPE`.
+	will be `[filetype]`.If the type is 2,it will be `FILETYPE`.If the
+	type is 3,it will be `filetype`.
 
 Here is an example:
 

@@ -143,12 +143,21 @@ function! s:SetHighlight() abort
 	endfor
 endfunction " }}}
 
-" FUNCTION: SpellStatus() {{{
-function! SpellStatus() abort
+" FUNCTION: HicusSpellStatus() {{{
+function! HicusSpellStatus() abort
 	if &spell == 0
 		return ''
 	elseif &spell == 1
 		return 'SPELL['.&spelllang.']'
+	endif
+endfunction " }}}
+
+" FUNCTION: HicusFiletype(type) {{{
+function! HicusFiletype(type) abort
+	if a:type == 0
+		return toupper(&filetype)
+	elseif a:type == 1
+		return &filetype
 	endif
 endfunction " }}}
 
@@ -171,7 +180,7 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 			elseif l:attribute ==# 'space'
 				let &statusline.="\ "
 			elseif l:attribute ==# 'spell'
-				set statusline+=%{SpellStatus()}
+				set statusline+=%{HicusSpellStatus()}
 			elseif l:attribute ==# 'mode'
 				set statusline+=%{SetStatusMode()}
 			elseif l:attribute ==# 'filename'
@@ -231,7 +240,9 @@ function! s:DecideAttribute(leftKey, rightKey) abort
 			elseif l:attribute ==# 'filetype' || l:attribute ==# 'filetype1'
 				set statusline+=%y
 			elseif l:attribute ==# 'filetype2'
-				set statusline+=%Y
+				set statusline+=%{HicusFiletype(0)}
+			elseif l:attribute ==# 'filetype3'
+				set statusline+=%{HicusFiletype(1)}
 			else
 				let &statusline .= l:attribute
 			endif
