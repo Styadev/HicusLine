@@ -283,7 +283,7 @@ function! s:SetStatusline() abort
 	if !empty(l:leftKey) && !empty(l:rightKey)
 		call s:DecideAttribute(l:leftKey, l:rightKey)
 	endif
-	if &statusline == ''
+	if &statusline == '' && has_key(g:HicusLine, 'active')
 		call s:ThrowError(0, 'The g:HicusLine is error, please check the source code or restart (neo)vim.')
 	endif
 	unlet l:leftKey
