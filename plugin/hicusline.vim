@@ -204,7 +204,6 @@ function! s:SetStatusline() abort
 	for [l:key, l:value] in items(g:HicusLine)
 		if l:key == 'theme'
 			call s:ThrowError(0, 'We are collecting themes.')
-			return
 		endif
 		if !exists('l:rightKey')
 			let l:rightKey = get(l:value, 'right')
