@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.3.27
-" Version: 1.1.0
+" Last Change: 2020.3.29
+" Version: 1.1.1
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
 
@@ -41,6 +41,27 @@ endif
 let g:HicusLineLoaded = 1
 let g:HicusLineStatus = 1
 " 1}}}
+
+" HicusLineOptions {{{
+let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
+			\'modehighlight': '%#modehighlight#', 'gitinfo': '%{HicusGitInfo()}',
+			\'errorstatus': '%{HicusErrorStatus()}',
+			\'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
+			\'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
+			\'filename': '%t', 'fileformat': '%{&fileformat}',
+			\'fileencoding': '%{&fileencoding}','bufferfilepath': '%f',
+			\'filepath': '%F', 'buffernumber': '%n', 'chardecimal': '%b',
+			\'charhexadecimal': '%B', 'printernumber': '%N', 'linenumber': '%l',
+			\'bufferlinesnumber': '%L', 'columnnuber': '%c', 'overdecimal': '%o',
+			\'overhexadecimal': '%O', 'virtualcolumn': '%v', 'virtualspecial': '%V',
+			\'linepercentage': '%p', 'windowpercentage': '%P', 'modified': '%m',
+			\'modified1': '%m', 'modified2': '%M', 'readonly': '%r',
+			\'readonly1': '%r', 'readonly2': '%R', 'helpbuffer': '%h',
+			\'helpbuffer1': '%h', 'helpbuffer2': '%H', 'preview': '%w',
+			\'preview1': '%w', 'preview2': '%W', 'filetype': '%y',
+			\'filetype2': '%{HicusFiletype(0)}', 'filetype3': '%{HicusFiletype(1)}',
+			\}
+" }}}
 
 " Command mappings {{{
 command! -nargs=0 HicusLineEnable call s:TurnOnOff(1)
@@ -102,8 +123,8 @@ function! s:UseDefaultTemplate() abort
 	call HicusLineDefaultUse()
 endfunction " }}}
 
-" FUNCTION: SetStatusMode() {{{
-function! SetStatusMode() abort
+" FUNCTION: HicusStatusMode() {{{
+function! HicusStatusMode() abort
 	if !exists('g:HicusLineMode')
 		call s:ThrowError(0, 'The g:HicusLineMode is not set, please run :help g:HicusLineMode to know about it.')
 		return
@@ -165,84 +186,8 @@ endfunction " }}}
 function! s:DecideAttribute(leftKey, rightKey) abort
 	function! SetAttribute(keyAttribute)
 		for l:attribute in a:keyAttribute
-			if type(l:attribute) == 0 && l:attribute == 0
-				set statusline+=%*
-			elseif l:attribute ==# 'truncate'
-				set statusline+=%<
-			elseif l:attribute ==# 'modehighlight'
-				set statusline+=%#modehighlight#
-			elseif l:attribute ==# 'gitinfo'
-				set statusline+=%{HicusGitInfo()}
-			elseif l:attribute ==# 'errorstatus'
-				set statusline+=%{HicusErrorStatus()}
-			elseif l:attribute ==# 'warningstatus'
-				set statusline+=%{HicusWarningStatus()}
-			elseif l:attribute ==# 'space'
-				let &statusline.="\ "
-			elseif l:attribute ==# 'spell'
-				set statusline+=%{HicusSpellStatus()}
-			elseif l:attribute ==# 'mode'
-				set statusline+=%{SetStatusMode()}
-			elseif l:attribute ==# 'filename'
-				set statusline+=%t
-			elseif l:attribute ==# 'fileformat'
-				set statusline+=%{&fileformat}
-			elseif l:attribute ==# 'fileencoding'
-				set statusline+=%{&fileencoding}
-			elseif l:attribute ==# 'bufferfilepath'
-				set statusline+=%f
-			elseif l:attribute ==# 'filepath'
-				set statusline+=%F
-			elseif l:attribute ==# 'buffernumber'
-				set statusline+=%n
-			elseif l:attribute ==# 'chardecimal'
-				set statusline+=%b
-			elseif l:attribute ==# 'charhexadecimal'
-				set statusline+=%B
-			elseif l:attribute ==# 'printernumber'
-				set statusline+=%N
-			elseif l:attribute ==# 'linenumber'
-				set statusline+=%l
-			elseif l:attribute ==# 'bufferlinesnumber'
-				set statusline+=%L
-			elseif l:attribute ==# 'columnnuber'
-				set statusline+=%c
-			elseif l:attribute ==# 'overdecimal'
-				set statusline+=%o
-			elseif l:attribute ==# 'overhexadecimal'
-				set statusline+=%O
-			elseif l:attribute ==# 'virtualcolumn'
-				set statusline+=%v
-			elseif l:attribute ==# 'virtualspecial'
-				set statusline+=%V
-			elseif l:attribute ==# 'linepercentage'
-				set statusline+=%p
-			elseif l:attribute ==# 'windowpercentage'
-				set statusline+=%P
-			elseif l:attribute ==# 'argumentlist'
-				set statusline+=%a
-			elseif l:attribute ==# 'modified' || l:attribute ==# 'modified1'
-				set statusline+=%m
-			elseif l:attribute ==# 'modified2'
-				set statusline+=%M
-			elseif l:attribute ==# 'readonly' || l:attribute ==# 'readonly1'
-				set statusline+=%r
-			elseif l:attribute ==# 'readonly2'
-				set statusline+=%R
-			elseif l:attribute ==# 'helpbuffer' || l:attribute ==# 'helpbuffer1'
-				set statusline+=%h
-			elseif l:attribute ==# 'helpbuffer2'
-				set statusline+=%H
-			elseif l:attribute ==# 'preview' || l:attribute ==# 'preview1'
-				set statusline+=%w
-			elseif l:attribute ==# 'preview2'
-				set statusline+=%W
-			elseif l:attribute ==# 'filetype' || l:attribute ==# 'filetype1'
-				set statusline+=%y
-			elseif l:attribute ==# 'filetype2'
-				set statusline+=%{HicusFiletype(0)}
-			elseif l:attribute ==# 'filetype3'
-				set statusline+=%{HicusFiletype(1)}
+			if has_key(s:HicusLineOptions, l:attribute)
+				let &statusline .= get(s:HicusLineOptions, l:attribute)
 			else
 				let &statusline .= l:attribute
 			endif

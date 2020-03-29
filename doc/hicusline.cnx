@@ -1,6 +1,6 @@
 *hicusline*					(Neo)Vim下的高度自定义状态栏
 
-版本: 1.1.0
+版本: 1.1.1
 作者: Styadev的所有人
 证书: MIT
 
@@ -112,7 +112,7 @@ let g:HicusColor = {
 
 'template': 'template' " 设置自带的状态栏模板
 
-你可以设置你自己的模板然后将其放入`template`目录。
+我们正在收集不同的模板。
 
 'active': { 'left': [...], 'right': [...] } " 设置状态栏
 

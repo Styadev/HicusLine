@@ -1,6 +1,6 @@
 *hicusline*			A highly customizable statusline in (neo)vim.
 
-Version: 1.1.0
+Version: 1.1.1
 Author: Styadev's everyone
 License: MIT
 
@@ -116,7 +116,7 @@ These are the options can write in {value}:
 
 'template': 'template' " Set the template and theme for statusline
 
-You can set your own template and put it in `template` dirctory.
+We're collecting templates.
 
 'active': { 'left': [...], 'right': [...] } " Set the statusline.
 
