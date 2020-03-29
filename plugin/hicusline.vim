@@ -114,15 +114,6 @@ function! HicusWarningStatus()
 	return s:tipsSign[1].l:warning
 endfunction " }}}
 
-" FUNCTION: s:UseDefaultTemplate() {{{
-function! s:UseDefaultTemplate() abort
-	if s:CheckStatusline() == 0
-		return
-	endif
-	runtime template/default.vim
-	call HicusLineDefaultUse()
-endfunction " }}}
-
 " FUNCTION: HicusStatusMode() {{{
 function! HicusStatusMode() abort
 	if !exists('g:HicusLineMode')
@@ -211,8 +202,8 @@ function! s:SetStatusline() abort
 		return
 	endif
 	for [l:key, l:value] in items(g:HicusLine)
-		if l:key == 'template' && l:value == 'default'
-			call s:UseDefaultTemplate()
+		if l:key == 'theme'
+			call s:ThrowError(0, 'We are collecting themes.')
 			return
 		endif
 		if !exists('l:rightKey')

@@ -114,9 +114,9 @@ set it,the statusline will throw an error and then be the vim's default.
 
 These are the options can write in {value}:
 
-'template': 'template' " Set the template and theme for statusline
+'theme': 'theme' " Set the theme for statusline
 
-We're collecting templates.
+We're collecting themes.
 
 'active': { 'left': [...], 'right': [...] } " Set the statusline.
 

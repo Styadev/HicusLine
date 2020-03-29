@@ -110,9 +110,9 @@ let g:HicusColor = {
 
 以下是能够写入{value}的选项:
 
-'template': 'template' " 设置自带的状态栏模板
+'theme': 'themename' " 设置自带的状态栏主题
 
-我们正在收集不同的模板。
+我们正在收集主题。
 
 'active': { 'left': [...], 'right': [...] } " 设置状态栏
 
