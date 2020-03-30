@@ -10,34 +10,21 @@ if exists('g:HicusLineLoaded')
 	finish
 endif
 " FUNCTION: s:ThrowError(errorType[, otherContent]) {{{2
-function! s:ThrowError(errorType, ...)
+function! s:ThrowError(...)
 	echohl Error
-	if a:errorType == 0
-		echom '[Hicusline]: '.a:1
-	elseif a:errorType == 1
-		echom '[HicusLine]: You have not set the HicusLineEnabled, run :help hicusline to know about it.'
-	elseif a:errorType == 2
-		echom '[HicusLine]: The HicusLineEnabled you set is wrong, run :help hicusline to know about it.'
-	elseif a:errorType == 3
-		echom '[HicusLine]: You have not open the statusline, write: set laststatus=2 in your vimrc or init.vim.'
-	endif
+	echom !exists('a:1')?'':'[Hicusline]: '.a:1
 	echohl None
 endfunction " 2}}}
-if !exists('g:HicusLineEnabled')
-	call s:ThrowError(1)
-	finish
-elseif g:HicusLineEnabled == 0
-	finish
-elseif g:HicusLineEnabled != 0 && g:HicusLineEnabled != 1
-	call s:ThrowError(2)
-	finish
-elseif type(g:HicusLineEnabled) != 0
-	call s:ThrowError(2)
-	finish
-elseif &laststatus == 0
-	call s:ThrowError(3)
-	finish
-endif
+execute !exists('g:HicusLineEnabled')?
+			\"call s:ThrowError('[HicusLine]: You have not set the HicusLineEnabled, run :help hicusline to know about it.') | finish":
+			\""
+execute g:HicusLineEnabled != 0 && g:HicusLineEnabled != 1?
+			\"call s:ThrowError('[HicusLine]: The HicusLineEnabled you set is wrong, run :help hicusline to know about it.') | finish":
+			\""
+execute &laststatus == 0?
+			\"call s:ThrowError('[HicusLine]: You have not open the statusline, write: set laststatus=2 in your vimrc or init.vim.') | finish":
+			\""
+silent! execute g:HicusLineEnabled == 0?'finish':''
 let g:HicusLineLoaded = 1
 let g:HicusLineStatus = 1
 " 1}}}
@@ -47,8 +34,9 @@ let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
 			\'modehighlight': '%#modehighlight#', 'gitinfo': '%{HicusGitInfo()}',
 			\'errorstatus': '%{HicusErrorStatus()}',
 			\'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
-			\'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
-			\'filename': '%t', 'fileformat': '%{&fileformat}',
+			\'spell': '%{HicusSpellStatus()}',
+			\'mode': '%{g:HicusLineMode.HicusStatusMode()}',
+			\'filename': '%t','fileformat': '%{&fileformat}',
 			\'fileencoding': '%{&fileencoding}','bufferfilepath': '%f',
 			\'filepath': '%F', 'buffernumber': '%n', 'chardecimal': '%b',
 			\'charhexadecimal': '%B', 'printernumber': '%N', 'linenumber': '%l',
@@ -71,71 +59,49 @@ command! -nargs=0 HicusSyntaxReload call s:SetHighlight()
 
 " FUNCTION: s:CheckStatusline() {{{
 function! s:CheckStatusline()
-	if g:HicusLineLoaded == 0
-		call s:ThrowError(0, 'The g:HicusLineLoaded is error, please check the source code or restart (neo)vim.')
-		finish
-	elseif g:HicusLineStatus == 0
-		call s:ThrowError(0, 'Program wants to start statusline, but it is closing, please check the source code or restart (neo)vim.')
-		return
-	endif
+	execute g:HicusLineLoaded == 0?
+				\"call s:ThrowError('The g:HicusLineLoaded is error, please check the source code or restart (neo)vim.') | finish":
+					\""
+	execute g:HicusLineStatus == 0?
+				\"call s:ThrowError('Program wants to start statusline, but it is closing, please check the source code or restart (neo)vim.') | return":
+				\""
 	return 1
 endfunction " }}}
 
 " FUNCTIONS: TipsSigns {{{
 function! HicusGitInfo()
 	let l:gitinfo = get(g:, 'coc_git_status', '')
-	if empty(l:gitinfo)
-		return ''
-	endif
-	return l:gitinfo
+	return empty(l:gitinfo)?'':l:gitinfo
 endfunction
 
 function! HicusErrorStatus()
-	let l:status = get(b:, 'coc_diagnostic_info', '')
-	if empty(l:status)
-		return ''
-	endif
-	let l:errors = get(l:status, 'error', '')
-	if l:errors == ''
-		return ''
-	endif
-	return s:tipsSign[0].l:errors
+	let l:errorStatus = get(b:, 'coc_diagnostic_info', '')
+	let l:errors = l:errorStatus == ''?'':get(l:errorStatus, 'error', '')
+	unlet l:errorStatus
+	return l:errors == ''?'':s:tipsSign[0].l:errors
 endfunction
 
 function! HicusWarningStatus()
-	let l:status = get(b:, 'coc_diagnostic_info', '')
-	if empty(l:status)
-		return ''
-	endif
-	let l:warning = get(l:status, 'warning', '')
-	if l:warning == ''
-		return ''
-	endif
-	return s:tipsSign[1].l:warning
+	let l:warningStatus = get(b:, 'coc_diagnostic_info', '')
+	let l:warnings = l:warningStatus == ''?'':get(l:status, 'warning', '')
+	return l:warnings == ''?'':s:tipsSign[1].l:warnings
 endfunction " }}}
 
-" FUNCTION: HicusStatusMode() {{{
-function! HicusStatusMode() abort
-	if !exists('g:HicusLineMode')
-		call s:ThrowError(0, 'The g:HicusLineMode is not set, please run :help g:HicusLineMode to know about it.')
-		return
-	elseif empty(g:HicusLineMode) || type(g:HicusLineMode) != 4
-		call s:ThrowError(0, 'The g:HicusLineMode is error, please run :help g:HicusLineMode to know about it.')
+" FUNCTION: g:HicusLineMode.HicusStatusMode() {{{
+function! g:HicusLineMode.HicusStatusMode() abort dict
+	if !exists('g:HicusLineMode') || empty(g:HicusLineMode) ||
+				\type(g:HicusLineMode) != 4
+		call s:ThrowError('The g:HicusLineMode is error, please run :help g:HicusLineMode to know about it.')
 		return
 	endif
-	if has_key(g:HicusLineMode, mode())
-		let l:statusMode = get(g:HicusLineMode, mode())
-		if type(l:statusMode) != 3
-			return l:statusMode
-		endif
-		silent! execute 'highlight link modehighlight '.l:statusMode[1]
-		if len(l:statusMode) == 3 && type(l:statusMode[2]) == 4
-			for [ l:key, l:value ] in items(l:statusMode[2])
-				silent! execute 'highlight link '.l:key.' '.l:value
-			endfor
-		endif
-	else
-		return
+	silent! execute has_key(g:HicusLineMode, mode())?"return":""
+	let l:statusMode = get(g:HicusLineMode, mode())
+	silent! execute type(l:statusMode) != 3?'return l:statusMode':''
+	silent! execute 'highlight link modehighlight '.l:statusMode[1]
+	if len(l:statusMode) == 3 && type(l:statusMode[2]) == 4
+		for l:num in range(len(l:statusMode[2])) " !<CS>!
+			silent! execute 'highlight link '.l:key.' '.l:value
+		endfor
 	endif
 	return l:statusMode[0]
 endfunction " }}}
@@ -143,12 +109,12 @@ endfunction " }}}
 " FUNCTION: s:SetHighlight() {{{
 function! s:SetHighlight() abort
 	if !exists('g:HicusColor')
-		call s:ThrowError(0, 'You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine')
+		call s:ThrowError('You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine')
 		return
 	endif
 	for l:values in items(g:HicusColor)
 		if len(l:values) != 2 || len(l:values[1]) != 3
-			call ThrowError(0, 'The g:HicusColor is error, please check it.')
+			call ThrowError('The g:HicusColor is error, please check it.')
 			return
 		endif
 		execute 'highlight '.l:values[0].' gui='.l:values[1][0].' guifg='.l:values[1][1].' guibg='.l:values[1][2]
@@ -198,12 +164,12 @@ endfunction " }}}
 " FUNCTION: s:SetStatusline() {{{
 function! s:SetStatusline() abort
 	if !exists('g:HicusLine') || empty(g:HicusLine)
-		call s:ThrowError(0, 'The g:HicusLine is error, please check it or restart (neo)vim.')
+		call s:ThrowError('The g:HicusLine is error, please check it or restart (neo)vim.')
 		return
 	endif
 	for [l:key, l:value] in items(g:HicusLine)
 		if l:key == 'theme'
-			call s:ThrowError(0, 'We are collecting themes.')
+			call s:ThrowError('We are collecting themes.')
 		endif
 		if !exists('l:rightKey')
 			let l:rightKey = get(l:value, 'right')
@@ -219,7 +185,7 @@ function! s:SetStatusline() abort
 		call s:DecideAttribute(l:leftKey, l:rightKey)
 	endif
 	if &statusline == '' && has_key(g:HicusLine, 'active')
-		call s:ThrowError(0, 'The g:HicusLine is error, please check the source code or restart (neo)vim.')
+		call s:ThrowError('The g:HicusLine is error, please check the source code or restart (neo)vim.')
 	endif
 	unlet l:leftKey
 	unlet l:rightKey
@@ -241,7 +207,7 @@ endfunction " }}}
 " FUNCTION: s:StatuslineStop() {{{
 function! s:StatuslineStop() abort
 	if g:HicusLineStatus == 1
-		call s:ThrowError(0, 'The g:HicusLineStatus is error, please check the source code or restart (neo)vim.')
+		call s:ThrowError('The g:HicusLineStatus is error, please check the source code or restart (neo)vim.')
 		return
 	endif
 	let &statusline = ''
@@ -251,17 +217,17 @@ endfunction " }}}
 function! s:TurnOnOff(turnType) abort " TurnOn the HicusLine
 	if a:turnType == 0
 		if exists('g:HicusLineStatus') && g:HicusLineStatus == 0
-			call s:ThrowError(0, 'The HicusLine is colsing, you can run :help hicusline-command to know about it.')
+			call s:ThrowError('The HicusLine is colsing, you can run :help hicusline-command to know about it.')
 			return
 		endif
 		let g:HicusLineStatus = 0
 		call s:StatuslineStop()
 	elseif a:turnType == 1
 		if !exists('g:HicusLineStatus')
-			call s:ThrowError(0, 'The HicusLine is openning, you can run :help hicusline-command to know about it.')
+			call s:ThrowError('The HicusLine is openning, you can run :help hicusline-command to know about it.')
 			return
 		elseif g:HicusLineStatus == 1
-			call s:ThrowError(0, 'The HicusLine is openning, you can run :help hicusline-command to know about it.')
+			call s:ThrowError('The HicusLine is openning, you can run :help hicusline-command to know about it.')
 			return
 		endif
 		let g:HicusLineStatus = 1
