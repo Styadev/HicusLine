@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.3.29
-" Version: 1.1.1
+" Last Change: 2020.4.9
+" Version: 1.1.2
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
 
