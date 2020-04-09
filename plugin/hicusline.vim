@@ -34,9 +34,8 @@ let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
 			\'modehighlight': '%#modehighlight#', 'gitinfo': '%{HicusGitInfo()}',
 			\'errorstatus': '%{HicusErrorStatus()}',
 			\'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
-			\'spell': '%{HicusSpellStatus()}',
-			\'mode': '%{g:HicusLineMode.HicusStatusMode()}',
-			\'filename': '%t','fileformat': '%{&fileformat}',
+			\'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
+			\'filename': '%t', 'fileformat': '%{&fileformat}',
 			\'fileencoding': '%{&fileencoding}','bufferfilepath': '%f',
 			\'filepath': '%F', 'buffernumber': '%n', 'chardecimal': '%b',
 			\'charhexadecimal': '%B', 'printernumber': '%N', 'linenumber': '%l',
@@ -76,30 +75,30 @@ endfunction
 
 function! HicusErrorStatus()
 	let l:errorStatus = get(b:, 'coc_diagnostic_info', '')
-	let l:errors = l:errorStatus == ''?'':get(l:errorStatus, 'error', '')
+	let l:errors = empty(l:errorStatus)?'':get(l:errorStatus, 'error', '')
 	unlet l:errorStatus
 	return l:errors == ''?'':s:tipsSign[0].l:errors
 endfunction
 
 function! HicusWarningStatus()
 	let l:warningStatus = get(b:, 'coc_diagnostic_info', '')
-	let l:warnings = l:warningStatus == ''?'':get(l:status, 'warning', '')
+	let l:warnings = empty(l:warningStatus)?'':get(l:warningStatus, 'warning', '')
 	return l:warnings == ''?'':s:tipsSign[1].l:warnings
 endfunction " }}}
 
-" FUNCTION: g:HicusLineMode.HicusStatusMode() {{{
-function! g:HicusLineMode.HicusStatusMode() abort dict
+" FUNCTION: HicusStatusMode() {{{
+function! HicusStatusMode() abort
 	if !exists('g:HicusLineMode') || empty(g:HicusLineMode) ||
 				\type(g:HicusLineMode) != 4
 		call s:ThrowError('The g:HicusLineMode is error, please run :help g:HicusLineMode to know about it.')
 		return
 	endif
-	silent! execute has_key(g:HicusLineMode, mode())?"return":""
+	silent! execute !has_key(g:HicusLineMode, mode())?"return":""
 	let l:statusMode = get(g:HicusLineMode, mode())
 	silent! execute type(l:statusMode) != 3?'return l:statusMode':''
 	silent! execute 'highlight link modehighlight '.l:statusMode[1]
 	if len(l:statusMode) == 3 && type(l:statusMode[2]) == 4
-		for l:num in range(len(l:statusMode[2])) " !<CS>!
+		for [ l:key, l:value ] in items(l:statusMode[2])
 			silent! execute 'highlight link '.l:key.' '.l:value
 		endfor
 	endif
