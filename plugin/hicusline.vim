@@ -1,6 +1,6 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.4.9
+" Last Change: 2020.4.16
 " Version: 1.1.2
 " Repository: https://github.com/Styadev/HicusLine
 " License: MIT
@@ -11,9 +11,7 @@ if exists('g:HicusLineLoaded')
 endif
 " FUNCTION: s:ThrowError(errorType[, otherContent]) {{{2
 function! s:ThrowError(...)
-	echohl Error
-	echom !exists('a:1')?'':'[Hicusline]: '.a:1
-	echohl None
+	echohl Error | echom !exists('a:1')?'':'[Hicusline]: '.a:1 | echohl None
 endfunction " 2}}}
 execute !exists('g:HicusLineEnabled')?
 			\"call s:ThrowError('[HicusLine]: You have not set the HicusLineEnabled, run :help hicusline to know about it.') | finish":
@@ -31,8 +29,8 @@ let g:HicusLineStatus = 1
 
 " HicusLineOptions {{{
 let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
-			\'modehighlight': '%#modehighlight#', 'gitinfo': '%{HicusGitInfo()}',
-			\'errorstatus': '%{HicusErrorStatus()}',
+			\'modehighlight': '%#modehighlight#%{HicusModeHighlight()}',
+			\'errorstatus': '%{HicusErrorStatus()}', 'gitinfo': '%{HicusGitInfo()}',
 			\'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
 			\'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
 			\'filename': '%t', 'fileformat': '%{&fileformat}',
@@ -86,6 +84,20 @@ function! HicusWarningStatus()
 	return l:warnings == ''?'':s:tipsSign[1].l:warnings
 endfunction " }}}
 
+" FUNCTION: HicusModeHighlight() {{{
+function! HicusModeHighlight() abort
+	silent execute !has_key(g:HicusLineMode, mode())?"return 'Error'":""
+	let l:mode = get(g:HicusLineMode, mode())
+	silent execute type(l:mode) != 3?"return 'Error'":"highlight link modehighlight ".l:mode[1]
+	if len(l:mode) == 3 && type(l:mode[2]) == 4
+		for [ l:key, l:value ] in items(l:mode[2])
+			silent! execute 'highlight link '.l:key.' '.l:value
+		endfor
+	endif
+	unlet l:key l:value l:mode
+	return ''
+endfunction " }}}
+
 " FUNCTION: HicusStatusMode() {{{
 function! HicusStatusMode() abort
 	if !exists('g:HicusLineMode') || empty(g:HicusLineMode) ||
@@ -95,21 +107,14 @@ function! HicusStatusMode() abort
 	endif
 	silent! execute !has_key(g:HicusLineMode, mode())?"return":""
 	let l:statusMode = get(g:HicusLineMode, mode())
-	silent! execute type(l:statusMode) != 3?'return l:statusMode':''
-	silent! execute 'highlight link modehighlight '.l:statusMode[1]
-	if len(l:statusMode) == 3 && type(l:statusMode[2]) == 4
-		for [ l:key, l:value ] in items(l:statusMode[2])
-			silent! execute 'highlight link '.l:key.' '.l:value
-		endfor
-	endif
-	return l:statusMode[0]
+	silent! execute type(l:statusMode) != 3?'return l:statusMode':
+				\ 'return l:statusMode[0]'
 endfunction " }}}
 
 " FUNCTION: s:SetHighlight() {{{
 function! s:SetHighlight() abort
 	if !exists('g:HicusColor')
-		call s:ThrowError('You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine')
-		return
+		call s:ThrowError('You have not set the g:HicusColor, if you do not want to set, you should delete the highlight group in g:HicusLine') | return
 	endif
 	for l:values in items(g:HicusColor)
 		if len(l:values) != 2 || len(l:values[1]) != 3
@@ -186,10 +191,7 @@ function! s:SetStatusline() abort
 	if &statusline == '' && has_key(g:HicusLine, 'active')
 		call s:ThrowError('The g:HicusLine is error, please check the source code or restart (neo)vim.')
 	endif
-	unlet l:leftKey
-	unlet l:rightKey
-	unlet l:key
-	unlet l:value
+	unlet l:leftKey l:rightKey l:key l:value
 endfunction " }}}
 
 " FUNCTION: s:StatuslineStart() {{{
