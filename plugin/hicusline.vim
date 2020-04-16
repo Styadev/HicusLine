@@ -86,7 +86,7 @@ endfunction " }}}
 
 " FUNCTION: HicusModeHighlight() {{{
 function! HicusModeHighlight() abort
-	silent execute !has_key(g:HicusLineMode, mode())?"return 'Error'":""
+	silent execute !has_key(g:HicusLineMode, mode())?"return ''":""
 	let l:mode = get(g:HicusLineMode, mode())
 	silent execute type(l:mode) != 3?"return 'Error'":"highlight link modehighlight ".l:mode[1]
 	if len(l:mode) == 3 && type(l:mode[2]) == 4
