@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.4.16
-" Version: 1.1.2
+" Last Change: 2020.4.17
+" Version: 1.1.5
 " Repository: https://github.com/Styadev/HicusLine.git &&
 " https://gitee.com/springhan/HicusLine.git
 " License: MIT
@@ -30,23 +30,25 @@ let g:HicusLineStatus = 1
 
 " HicusLineOptions {{{
 let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
-			\'modehighlight': '%#modehighlight#%{HicusModeHighlight()}',
-			\'errorstatus': '%{HicusErrorStatus()}', 'gitinfo': '%{HicusGitInfo()}',
-			\'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
-			\'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
-			\'filename': '%t', 'fileformat': '%{&fileformat}',
-			\'fileencoding': '%{&fileencoding}','bufferfilepath': '%f',
-			\'filepath': '%F', 'buffernumber': '%n', 'chardecimal': '%b',
-			\'charhexadecimal': '%B', 'printernumber': '%N', 'linenumber': '%l',
-			\'bufferlinesnumber': '%L', 'columnnuber': '%c', 'overdecimal': '%o',
-			\'overhexadecimal': '%O', 'virtualcolumn': '%v', 'virtualspecial': '%V',
-			\'linepercentage': '%p', 'windowpercentage': '%P', 'modified': '%m',
-			\'modified1': '%m', 'modified2': '%M', 'readonly': '%r',
-			\'readonly1': '%r', 'readonly2': '%R', 'helpbuffer': '%h',
-			\'helpbuffer1': '%h', 'helpbuffer2': '%H', 'preview': '%w',
-			\'preview1': '%w', 'preview2': '%W', 'filetype': '%y',
-			\'filetype2': '%{HicusFiletype(0)}', 'filetype3': '%{HicusFiletype(1)}',
-			\}
+			\ 'modehighlight': '%#modehighlight#%{HicusModeHighlight()}',
+			\ 'errorstatus': '%{HicusErrorStatus()}', 'gitinfo': '%{HicusGitInfo()}',
+			\ 'warningstatus': '%{HicusWarningStatus()}', 'space': "\ ",
+			\ 'spell': '%{HicusSpellStatus()}', 'mode': '%{HicusStatusMode()}',
+			\ 'filename': '%t', 'fileformat': '%{&fileformat}',
+			\ 'fileencoding': '%{&fileencoding}','bufferfilepath': '%f',
+			\ 'filepath': '%F', 'buffernumber': '%n', 'chardecimal': '%b',
+			\ 'charhexadecimal': '%B', 'printernumber': '%N', 'linenumber': '%l',
+			\ 'bufferlinesnumber': '%L', 'columnnuber': '%c', 'overdecimal': '%o',
+			\ 'overhexadecimal': '%O', 'virtualcolumn': '%v', 'virtualspecial': '%V',
+			\ 'linepercentage': '%p', 'windowpercentage': '%P', 'modified': '%m',
+			\ 'modified1': '%m', 'modified2': '%M', 'readonly': '%r',
+			\ 'readonly1': '%r', 'readonly2': '%R', 'helpbuffer': '%h',
+			\ 'helpbuffer1': '%h', 'helpbuffer2': '%H', 'preview': '%w',
+			\ 'preview1': '%w', 'preview2': '%W', 'filetype': '%y',
+			\ 'filetype2': '%{HicusFiletype(0)}', 'filetype3': '%{HicusFiletype(1)}',
+			\ 'bufferline': '%<%#HicusBuffer#%{HicusBufferPrev()}'.
+			\ '%#HicusCurrentBuffer#%{HicusBufferCur()}%#HicusBuffer#'.
+			\ '%{HicusBufferNext()}%*', }
 " }}}
 
 " Command mappings {{{
@@ -144,24 +146,59 @@ function! HicusFiletype(type) abort
 	endif
 endfunction " }}}
 
+" FUNCTIONS: HicusBuffer {{{
+function! HicusBufferPrev() abort
+	let l:buffers = ''
+	for l:bufferNr in range(1, bufnr('%')-1)
+		if bufexists(l:bufferNr) && buflisted(l:bufferNr)
+		"if getbufvar(l:bufferNr, '&hidden') != 0 && exists(getbufvar(l:bufferNr, '&windows'))
+			let l:bufferName = s:buffertype == 'name'?
+						\ fnamemodify(bufname(l:bufferNr), ':t'):
+						\ fnamemodify(bufname(l:bufferNr), ':p')
+			let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+						\ l:bufferNr.' '.l:bufferName.' ' :
+						\ l:bufferNr.' '.l:bufferName.'+ '
+		endif
+	endfor
+	return l:buffers
+endfunction
+
+function! HicusBufferCur() abort
+	let l:bufferName = s:buffertype == 'name'?
+				\ fnamemodify(bufname('%'), ':t'):
+				\ fnamemodify(bufname('%'), ':p')
+	return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.l:bufferName.'+' :
+				\ bufnr('%').' '.l:bufferName
+endfunction
+
+function! HicusBufferNext() abort
+	let l:buffers = ''
+	for l:bufferNr in range(bufnr('%')+1, bufnr('$'))
+		if bufexists(l:bufferNr) && buflisted(l:bufferNr)
+		"if getbufvar(l:bufferNr, '&hidden') != 0 && exists(getbufvar(l:bufferNr, '&windows'))
+			let l:bufferName = s:buffertype == 'name'?
+						\ fnamemodify(bufname(l:bufferNr), ':t'):
+						\ fnamemodify(bufname(l:bufferNr), ':p')
+			let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+						\ l:bufferNr.' '.l:bufferName.' ' :
+						\ l:bufferNr.' '.l:bufferName.'+ '
+		endif
+	endfor
+	return l:buffers
+endfunction " }}}
+
 " FUNCTION: s:DecideAttribute(leftKey, rightKey) {{{
 function! s:DecideAttribute(leftKey, rightKey) abort
 	function! SetAttribute(keyAttribute)
 		for l:attribute in a:keyAttribute
-			if has_key(s:HicusLineOptions, l:attribute)
-				let &statusline .= get(s:HicusLineOptions, l:attribute)
-			else
-				let &statusline .= l:attribute
-			endif
+			let &statusline .= has_key(s:HicusLineOptions, l:attribute)?
+						\ get(s:HicusLineOptions, l:attribute):l:attribute
 		endfor
 	endfunction
-	if !exists('l:leftStatus')
-		call SetAttribute(a:leftKey)
+	if !exists('l:leftStatus') | call SetAttribute(a:leftKey)
 		let l:leftStatus = 1
 	endif
-	if l:leftStatus == 1
-		set statusline+=%=
-		call SetAttribute(a:rightKey)
+	if l:leftStatus == 1 | set statusline+=%= | call SetAttribute(a:rightKey)
 	endif
 	unlet l:leftStatus
 endfunction " }}}
@@ -184,6 +221,7 @@ function! s:SetStatusline() abort
 		endif
 		if l:key == 'basic_option'
 			let s:tipsSign = [ get(l:value, 'ErrorSign'), get(l:value, 'WarningSign'), ]
+			let s:buffertype = get(l:value, 'buffertype', 'name')
 		endif
 	endfor
 	if !empty(l:leftKey) && !empty(l:rightKey)
