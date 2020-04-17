@@ -2,7 +2,8 @@
 " Author: Styadev's everyone <https://github.com/Styadev>
 " Last Change: 2020.4.16
 " Version: 1.1.2
-" Repository: https://github.com/Styadev/HicusLine
+" Repository: https://github.com/Styadev/HicusLine.git &&
+" https://gitee.com/springhan/HicusLine.git
 " License: MIT
 
 " AutoLoad {{{1
