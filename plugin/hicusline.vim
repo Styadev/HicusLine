@@ -151,13 +151,18 @@ function! HicusBufferPrev() abort
 	let l:buffers = ''
 	for l:bufferNr in range(1, bufnr('%')-1)
 		if bufexists(l:bufferNr) && buflisted(l:bufferNr)
-		"if getbufvar(l:bufferNr, '&hidden') != 0 && exists(getbufvar(l:bufferNr, '&windows'))
-			let l:bufferName = s:buffertype == 'name'?
-						\ fnamemodify(bufname(l:bufferNr), ':t'):
-						\ fnamemodify(bufname(l:bufferNr), ':p')
-			let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-						\ l:bufferNr.' '.l:bufferName.' ' :
-						\ l:bufferNr.' '.l:bufferName.'+ '
+			if bufname(l:bufferNr) != ''
+				let l:bufferName = s:buffertype == 'name'?
+							\ fnamemodify(bufname(l:bufferNr), ':t'):
+							\ fnamemodify(bufname(l:bufferNr), ':p')
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+							\ l:bufferNr.' '.l:bufferName.' ' :
+							\ l:bufferNr.' '.l:bufferName.'+ '
+			else
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+							\ l:bufferNr.' '.'[No Name] ' :
+							\ l:bufferNr.' '.'[No Name]+ '
+			endif
 		endif
 	endfor
 	return l:buffers
@@ -167,21 +172,31 @@ function! HicusBufferCur() abort
 	let l:bufferName = s:buffertype == 'name'?
 				\ fnamemodify(bufname('%'), ':t'):
 				\ fnamemodify(bufname('%'), ':p')
-	return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.l:bufferName.'+' :
-				\ bufnr('%').' '.l:bufferName
+	if bufname('%') != ''
+		return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.l:bufferName.'+' :
+					\ bufnr('%').' '.l:bufferName
+	else
+		return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.'[No Name]+' :
+					\ bufnr('%').' '.'[No Name]'
+	endif
 endfunction
 
 function! HicusBufferNext() abort
 	let l:buffers = ''
 	for l:bufferNr in range(bufnr('%')+1, bufnr('$'))
 		if bufexists(l:bufferNr) && buflisted(l:bufferNr)
-		"if getbufvar(l:bufferNr, '&hidden') != 0 && exists(getbufvar(l:bufferNr, '&windows'))
-			let l:bufferName = s:buffertype == 'name'?
-						\ fnamemodify(bufname(l:bufferNr), ':t'):
-						\ fnamemodify(bufname(l:bufferNr), ':p')
-			let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-						\ l:bufferNr.' '.l:bufferName.' ' :
-						\ l:bufferNr.' '.l:bufferName.'+ '
+			if bufname(l:bufferNr) != ''
+				let l:bufferName = s:buffertype == 'name'?
+							\ fnamemodify(bufname(l:bufferNr), ':t'):
+							\ fnamemodify(bufname(l:bufferNr), ':p')
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+							\ l:bufferNr.' '.l:bufferName.' ' :
+							\ l:bufferNr.' '.l:bufferName.'+ '
+			else
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
+							\ l:bufferNr.' '.'[No Name] ' :
+							\ l:bufferNr.' '.'[No Name]+ '
+			endif
 		endif
 	endfor
 	return l:buffers
