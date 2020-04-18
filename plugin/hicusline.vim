@@ -47,7 +47,7 @@ let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
 			\ 'preview1': '%w', 'preview2': '%W', 'filetype': '%y',
 			\ 'filetype2': '%{HicusFiletype(0)}', 'filetype3': '%{HicusFiletype(1)}',
 			\ 'bufferline': '%<%#HicusBuffer#%{HicusBufferPrev()}'.
-			\ '%#HicusCurrentBuffer#%{HicusBufferCur()}%#HicusBuffer#'.
+			\ ' %#HicusCurrentBuffer# %{HicusBufferCur()} %#HicusBuffer# '.
 			\ '%{HicusBufferNext()}%*', }
 " }}}
 
@@ -156,12 +156,12 @@ function! HicusBufferPrev() abort
 							\ fnamemodify(bufname(l:bufferNr), ':t'):
 							\ fnamemodify(bufname(l:bufferNr), ':p')
 				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
-							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.''.s:bufferborderNext.' ' :
-							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.'+'.s:bufferborderNext.' '
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.l:bufferName.' '.s:bufferborderNext :
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.l:bufferName.'+ '.s:bufferborderNext
 			else
 				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
-							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]'.s:bufferborderNext.' ' :
-							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]+'.s:bufferborderNext.' '
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.'[No Name]'.' '.s:bufferborderNext :
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.'[No Name]+'.' '.s:bufferborderNext
 			endif
 		endif
 	endfor
@@ -173,11 +173,11 @@ function! HicusBufferCur() abort
 				\ fnamemodify(bufname('%'), ':t'):
 				\ fnamemodify(bufname('%'), ':p')
 	if bufname('%') != ''
-		return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.l:bufferName.'+' :
-					\ bufnr('%').' '.l:bufferName
+		return getbufvar('%', '&mod') == 1 ? bufnr('%').': '.l:bufferName.'+' :
+					\ bufnr('%').': '.l:bufferName
 	else
-		return getbufvar('%', '&mod') == 1 ? bufnr('%').' '.'[No Name]+' :
-					\ bufnr('%').' '.'[No Name]'
+		return getbufvar('%', '&mod') == 1 ? bufnr('%').': [No Name]+' :
+					\ bufnr('%').': [No Name]'
 	endif
 endfunction
 
@@ -190,12 +190,12 @@ function! HicusBufferNext() abort
 							\ fnamemodify(bufname(l:bufferNr), ':t'):
 							\ fnamemodify(bufname(l:bufferNr), ':p')
 				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
-							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.''.s:bufferborderNext.' ' :
-							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.'+'.s:bufferborderNext.' '
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.l:bufferName.' '.s:bufferborderNext :
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.l:bufferName.'+ '.s:bufferborderNext
 			else
 				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
-							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]'.s:bufferborderNext.' ' :
-							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]+'.s:bufferborderNext.' '
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.'[No Name]'.' '.s:bufferborderNext :
+							\ s:bufferborderPrev.' '.l:bufferNr.': '.'[No Name]+'.' '.s:bufferborderNext
 			endif
 		endif
 	endfor
@@ -240,6 +240,10 @@ function! s:SetStatusline() abort
 			let [ s:bufferborderPrev, s:bufferborderNext ] =
 						\ empty(get(l:value, 'bufferborder', '')) ? [ '', '' ] :
 						\ get(l:value, 'bufferborder')
+			let s:bufferborderPrev = s:bufferborderPrev != '' ? ' '.s:bufferborderPrev :
+						\ s:bufferborderPrev
+			let s:bufferborderNext = s:bufferborderNext != '' ? s:bufferborderNext.' ' :
+						\ s:bufferborderNext
 		endif
 	endfor
 	if !empty(l:leftKey) && !empty(l:rightKey)
