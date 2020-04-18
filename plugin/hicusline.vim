@@ -1,6 +1,6 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.4.17
+" Last Change: 2020.4.18
 " Version: 1.1.5
 " Repository: https://github.com/Styadev/HicusLine.git &&
 " https://gitee.com/springhan/HicusLine.git
@@ -155,13 +155,13 @@ function! HicusBufferPrev() abort
 				let l:bufferName = s:buffertype == 'name'?
 							\ fnamemodify(bufname(l:bufferNr), ':t'):
 							\ fnamemodify(bufname(l:bufferNr), ':p')
-				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-							\ l:bufferNr.' '.l:bufferName.' ' :
-							\ l:bufferNr.' '.l:bufferName.'+ '
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
+							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.''.s:bufferborderNext.' ' :
+							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.'+'.s:bufferborderNext.' '
 			else
-				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-							\ l:bufferNr.' '.'[No Name] ' :
-							\ l:bufferNr.' '.'[No Name]+ '
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
+							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]'.s:bufferborderNext.' ' :
+							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]+'.s:bufferborderNext.' '
 			endif
 		endif
 	endfor
@@ -189,13 +189,13 @@ function! HicusBufferNext() abort
 				let l:bufferName = s:buffertype == 'name'?
 							\ fnamemodify(bufname(l:bufferNr), ':t'):
 							\ fnamemodify(bufname(l:bufferNr), ':p')
-				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-							\ l:bufferNr.' '.l:bufferName.' ' :
-							\ l:bufferNr.' '.l:bufferName.'+ '
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
+							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.''.s:bufferborderNext.' ' :
+							\ s:bufferborderPrev.l:bufferNr.' '.l:bufferName.'+'.s:bufferborderNext.' '
 			else
-				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 1 ?
-							\ l:bufferNr.' '.'[No Name] ' :
-							\ l:bufferNr.' '.'[No Name]+ '
+				let l:buffers .= getbufvar(l:bufferNr, '&mod') == 0 ?
+							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]'.s:bufferborderNext.' ' :
+							\ s:bufferborderPrev.l:bufferNr.' '.'[No Name]+'.s:bufferborderNext.' '
 			endif
 		endif
 	endfor
@@ -237,6 +237,9 @@ function! s:SetStatusline() abort
 		if l:key == 'basic_option'
 			let s:tipsSign = [ get(l:value, 'ErrorSign'), get(l:value, 'WarningSign'), ]
 			let s:buffertype = get(l:value, 'buffertype', 'name')
+			let [ s:bufferborderPrev, s:bufferborderNext ] =
+						\ empty(get(l:value, 'bufferborder', '')) ? [ '', '' ] :
+						\ get(l:value, 'bufferborder')
 		endif
 	endfor
 	if !empty(l:leftKey) && !empty(l:rightKey)
