@@ -1,6 +1,6 @@
 *hicusline*			A highly customizable statusline in (neo)vim.
 
-Version: 1.1.1
+Version: 1.1.5
 Author: Styadev's everyone
 License: MIT
 
@@ -126,9 +126,9 @@ We're collecting themes.
 
 These options can write in 'left' and 'right':
 
-	%#Highlight# - Set the Highlight group.
+	'%#Highlight#' - Set the Highlight group.
 
-	%{function} - Set the function on status line.
+	'%{function}' - Set the function on status line.
 
 	0 - Show the default highlight group.
 
@@ -142,6 +142,12 @@ These options can write in 'left' and 'right':
 
 	'modehighlight' - Show the highlight that can change by the current
 	mode setting in |g:HicusLineMode|
+
+	'bufferline' - Show the bufferline.
+	You can set the |HicusBuffer| for the other buffers' highlight and
+	the |HicusCurrentBuffer| for the current buffer highlight.
+	And you can also set the border of the other buffers in
+	|basic_option|.
 
 	'truncate' - Set where to truncate line if too long.
 
@@ -215,8 +221,8 @@ type.(Default 1)
 Here is an example:
 
 let g:HicusLine = {
-      \'left': [ 'LeftHI', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
-      \'right': [ 'RightHI', 'modified1', 0, 'windowpercentage', ],
+      \'left': [ '%#LeftHI#', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
+      \'right': [ '%#RightHI#', 'modified1', 0, 'windowpercentage', ],
 \}
 
 hi LeftHI guifg=235 gui=bold guibg=NONE
@@ -230,13 +236,15 @@ else
 endfunction
 
 'basic_option': { 'optionname': 'value' }
-You can use it to set some options.Like the `ErrorSign` or the `WarningSign`
+You can use it to set some options.
+`ErrorSign` `WarningSign` `bufferborder`
 e.g.:
 
 let g:HicusLine = {
       \'basic_option': {
       \    'ErrorSign': '●',
       \    'WarningSign': '●',
+      \    'bufferborder': [ '[', ']', ],
       \},
 }
 

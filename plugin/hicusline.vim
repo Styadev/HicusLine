@@ -1,6 +1,6 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.4.18
+" Last Change: 2020.4.19
 " Version: 1.1.5
 " Repository: https://github.com/Styadev/HicusLine.git &&
 " https://gitee.com/springhan/HicusLine.git

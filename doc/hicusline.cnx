@@ -1,6 +1,6 @@
 *hicusline*					(Neo)Vim下的高度自定义状态栏
 
-版本: 1.1.1
+版本: 1.1.5
 作者: Styadev的所有人
 证书: MIT
 
@@ -122,9 +122,9 @@ let g:HicusColor = {
 
 以下是能够写入'left'和'right'的选项:
 
-	%#高亮组名称# - 设置高亮组名称
+	'%#高亮组名称#' - 设置高亮组名称
 
-	%{函数名称} - 设置函数名称
+	'%{函数名称}' - 设置函数名称
 
 	0 - 设置状态栏默认高亮颜色
 
@@ -136,6 +136,11 @@ let g:HicusColor = {
 
 	'modehighlight' - 在|g:HicusLine|设置的能够根据当前模式改变而改变的
 	高亮组
+
+	'bufferline' - 显示缓冲区列表。
+	你可以通过设置|HicusBuffer|的高亮来设置其他缓冲区文件的高亮并且也可以
+	通过设置|HicusCurrentBuffer|的高亮来设置当前缓冲区文件的高亮。
+	你也可以在|basic_option|设置其他缓冲区文件的边框。
 
 	'truncate' - 设置当状态栏过长时要省略的地方
 
@@ -200,8 +205,8 @@ let g:HicusColor = {
 示例:
 
 let g:HicusLine = {
-      \'left': [ 'LeftHI', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
-      \'right': [ 'RightHI', 'modified1', 0, 'windowpercentage', ],
+      \'left': [ '%#LeftHI#', 'filename', '%{ReadOnly()}' ,'|', 'filetype1', ],
+      \'right': [ '%#RightHI#', 'modified1', 0, 'windowpercentage', ],
 \}
 
 hi LeftHI guifg=235 gui=bold guibg=NONE
@@ -215,7 +220,8 @@ else
 endfunction
 
 'basic_option': { '选项名称': '值' }
-你可以使用它来设置一些选项。比如`ErrorSign`或者`WarningSign`
+你可以使用它来设置一些选项。
+`ErrorSign` `WarningSign` `bufferborder`
 
 示例:
 
@@ -223,6 +229,7 @@ let g:HicusLine = {
       \'basic_option': {
       \    'ErrorSign': '●',
       \    'WarningSign': '●',
+      \    'bufferborder': [ '[', ']', ],
       \},
 }
 
