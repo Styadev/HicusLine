@@ -1,6 +1,6 @@
 *hicusline*			A highly customizable statusline in (neo)vim.
 
-Version: 1.1.5
+Version: 1.1.6
 Author: Styadev's everyone
 License: MIT
 
@@ -142,6 +142,11 @@ These options can write in 'left' and 'right':
 
 	'modehighlight' - Show the highlight that can change by the current
 	mode setting in |g:HicusLineMode|
+
+	'gitmodified' - Show the added,modifieded,deleted lines count in
+	current buffer(Require vim-gitgutter)
+	You can set the tips' highlight by |GitStatusAdd| , |GitStatusDel| ,
+	|GitStatusMod|
 
 	'bufferline' - Show the bufferline.
 	You can set the |HicusBuffer| for the other buffers' highlight and

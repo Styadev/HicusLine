@@ -1,6 +1,6 @@
 *hicusline*					(Neo)Vim下的高度自定义状态栏
 
-版本: 1.1.5
+版本: 1.1.6
 作者: Styadev的所有人
 证书: MIT
 
@@ -136,6 +136,9 @@ let g:HicusColor = {
 
 	'modehighlight' - 在|g:HicusLine|设置的能够根据当前模式改变而改变的
 	高亮组
+
+	'gitmodified' - 显示当前文件的增加、修改、删除的总数量(需要vim-gitgutter)
+	可通过|GitStatusAdd| , |GitStatusDel| , |GitStatusMod|来定义提示的高亮
 
 	'bufferline' - 显示缓冲区列表。
 	你可以通过设置|HicusBuffer|的高亮来设置其他缓冲区文件的高亮并且也可以

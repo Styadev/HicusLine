@@ -1,7 +1,7 @@
 " A highly customizable statusline in (neo)vim.
 " Author: Styadev's everyone <https://github.com/Styadev>
-" Last Change: 2020.4.19
-" Version: 1.1.5
+" Last Change: 2020.7.12
+" Version: 1.1.6
 " Repository: https://github.com/Styadev/HicusLine.git &&
 " https://gitee.com/springhan/HicusLine.git
 " License: MIT
@@ -48,7 +48,9 @@ let s:HicusLineOptions = { 0: '%*', 'truncate': '%<',
 			\ 'filetype2': '%{HicusFiletype(0)}', 'filetype3': '%{HicusFiletype(1)}',
 			\ 'bufferline': '%<%#HicusBuffer#%{HicusBufferPrev()}'.
 			\ ' %#HicusCurrentBuffer# %{HicusBufferCur()} %#HicusBuffer# '.
-			\ '%{HicusBufferNext()}%*', }
+			\ '%{HicusBufferNext()}%*', 'gitmodified':
+			\ '%#GitStatusAdd#%{HicusGitStatus(0)} %#GitStatusMod#%{HicusGitStatus(1)}' .
+			\ ' %#GitStatusDel#%{HicusGitStatus(2)}%*' }
 " }}}
 
 " Command mappings {{{
@@ -144,6 +146,14 @@ function! HicusFiletype(type) abort
 	elseif a:type == 1
 		return &filetype
 	endif
+endfunction " }}}
+
+" FUNCTION: HicusGitStatus(form) {{{
+function! HicusGitStatus(form)
+	execute !exists('b:gitgutter.summary') ? "return ''" : ""
+	let l:summary = b:gitgutter.summary
+	return a:form == 0 ? '+' . l:summary[0] : a:form == 1 ? '~' . l:summary[1]
+				\ : '-' . l:summary[2]
 endfunction " }}}
 
 " FUNCTIONS: HicusBuffer {{{
